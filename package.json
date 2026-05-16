@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "migrate": "studiocms migrate",
+    "studiocms": "studiocms"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
