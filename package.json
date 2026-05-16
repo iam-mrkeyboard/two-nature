@@ -22,6 +22,7 @@
     "@studiocms/md": "^0.3.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.3",
+    "bcryptjs": "^3.0.3",
     "kysely-turso": "^0.1.1",
     "sharp": "^0.34.5",
     "studiocms": "^0.4.4",
