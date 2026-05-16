@@ -1,0 +1,107 @@
+---
+const logoUrl = 'https://onenaturehotels.com/wp-content/uploads/2023/11/onh_corpo_mobile_gold.svg';
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'About Us', href: '/about-us/' },
+  { label: 'One Nature Nyaruswiga', href: '/nyaruswiga/' },
+  { label: 'One Nature Mara River', href: '/mara-river/' },
+  { label: 'Media', href: '/media/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'Contact Us', href: '/contact-us/' },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="mainHeader">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" class="block">
+      <img src={logoUrl} alt="Two Nature Hotels" class="h-10 md:h-12" />
+    </a>
+
+    <div class="hidden md:flex items-center gap-8">
+      <div class="relative group">
+        <button class="font-heading uppercase tracking-wider text-sm text-gold-cream hover:text-gold transition-colors flex items-center gap-2">
+          Select a property
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="absolute right-0 top-full mt-2 w-56 bg-dark/95 backdrop-blur-sm rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+          <a href="/mara-river/" class="block px-4 py-3 text-gold-cream text-sm font-heading uppercase tracking-wider hover:bg-gold hover:text-dark transition-colors">Mara River</a>
+          <a href="/nyaruswiga/" class="block px-4 py-3 text-gold-cream text-sm font-heading uppercase tracking-wider hover:bg-gold hover:text-dark transition-colors">Nyaruswiga</a>
+        </div>
+      </div>
+
+      <button
+        id="menuToggle"
+        class="text-gold-cream hover:text-gold transition-colors"
+        aria-label="Open menu"
+      >
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <button
+      id="mobileMenuToggle"
+      class="md:hidden text-gold-cream hover:text-gold transition-colors"
+      aria-label="Open menu"
+    >
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<nav
+  id="slideMenu"
+  class="fixed inset-0 z-[60] bg-dark/98 backdrop-blur-sm translate-x-full transition-transform duration-500"
+>
+  <div class="flex justify-end p-6">
+    <button id="closeMenu" class="text-gold-cream hover:text-gold transition-colors" aria-label="Close menu">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="flex flex-col items-center gap-6 mt-8">
+    {navItems.map((item) => (
+      <a
+        href={item.href}
+        class="font-heading uppercase tracking-[0.15em] text-lg text-gold-cream hover:text-gold transition-colors"
+      >
+        {item.label}
+      </a>
+    ))}
+    <a
+      href="https://library.onenaturehotels.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="font-heading uppercase tracking-[0.15em] text-lg text-gold-cream hover:text-gold transition-colors"
+    >
+      Resource Library
+    </a>
+  </div>
+</nav>
+
+<script is:inline>
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const closeMenu = document.getElementById('closeMenu');
+  const slideMenu = document.getElementById('slideMenu');
+  const header = document.getElementById('mainHeader');
+
+  function openMenu() { slideMenu.classList.remove('translate-x-full'); slideMenu.classList.add('translate-x-0'); }
+  function closeMenuFn() { slideMenu.classList.remove('translate-x-0'); slideMenu.classList.add('translate-x-full'); }
+
+  menuToggle?.addEventListener('click', openMenu);
+  mobileMenuToggle?.addEventListener('click', openMenu);
+  closeMenu?.addEventListener('click', closeMenuFn);
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      header.classList.add('bg-dark/95', 'backdrop-blur-sm', 'shadow-lg');
+    } else {
+      header.classList.remove('bg-dark/95', 'backdrop-blur-sm', 'shadow-lg');
+    }
+  });
+</script>

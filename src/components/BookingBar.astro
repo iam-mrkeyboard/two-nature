@@ -1,0 +1,42 @@
+---
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const formatDate = (d: Date) => d.toISOString().split('T')[0];
+---
+
+<div class="bg-dark/90 backdrop-blur-sm border-t border-gold/20">
+  <div class="max-w-7xl mx-auto px-6 py-6">
+    <form class="flex flex-col md:flex-row gap-4 items-end">
+      <div class="flex-1 w-full">
+        <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Property</label>
+        <select class="w-full bg-transparent border border-gold/30 text-gold-cream font-heading uppercase tracking-wider text-sm px-4 py-3 focus:outline-none focus:border-gold transition-colors">
+          <option value="nyaruswiga" class="text-dark">One Nature Nyaruswiga</option>
+          <option value="mara-river" class="text-dark">One Nature Mara River</option>
+        </select>
+      </div>
+      <div class="flex-1 w-full">
+        <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Check In</label>
+        <input
+          type="date"
+          value={formatDate(today)}
+          class="w-full bg-transparent border border-gold/30 text-gold-cream font-heading uppercase tracking-wider text-sm px-4 py-3 focus:outline-none focus:border-gold transition-colors"
+        />
+      </div>
+      <div class="flex-1 w-full">
+        <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Check Out</label>
+        <input
+          type="date"
+          value={formatDate(tomorrow)}
+          class="w-full bg-transparent border border-gold/30 text-gold-cream font-heading uppercase tracking-wider text-sm px-4 py-3 focus:outline-none focus:border-gold transition-colors"
+        />
+      </div>
+      <button
+        type="submit"
+        class="bg-gold text-gold-cream font-heading uppercase tracking-wider text-sm px-10 py-3 hover:bg-dark hover:text-gold transition-all duration-300 w-full md:w-auto"
+      >
+        Book Now
+      </button>
+    </form>
+  </div>
+</div>
