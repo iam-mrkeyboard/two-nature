@@ -1,6 +1,26 @@
 ---
 import ScrollAnimation from './ScrollAnimation.astro';
+import { getSectionData } from '../lib/cms';
 
+interface SustainabilityData {
+  subtitle: string;
+  title: string;
+  description: string;
+  motto: string;
+  quote: string;
+  bgImage: string;
+}
+
+const fallback: SustainabilityData = {
+  subtitle: 'Sustainability',
+  title: 'Preservation and Luxury Unite',
+  description: 'Our eco-friendly accommodations and conservation initiatives ensure that the beauty of Africa is preserved for generations to come.',
+  motto: 'One People. One Planet. One Nature.',
+  quote: 'Beyond a stay, it is a captivating journey — a shared heartbeat with the Earth.',
+  bgImage: '/images/hero/banner.webp',
+};
+
+const data = await getSectionData<SustainabilityData>('section-sustainability', fallback);
 ---
 
 <ScrollAnimation />
@@ -8,26 +28,26 @@ import ScrollAnimation from './ScrollAnimation.astro';
 <section class="section-padding bg-dark relative overflow-hidden">
   <div class="absolute inset-0 opacity-10">
     <img
-      src="/images/hero/banner.webp"
+      src={data.bgImage}
       alt=""
       class="w-full h-full object-cover"
     />
   </div>
   <div class="relative z-10 max-w-4xl mx-auto px-6 text-center fade-in">
     <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold mb-6">
-      Sustainability
+      {data.subtitle}
     </span>
     <h2 class="font-display text-4xl md:text-5xl font-semibold text-gold-cream leading-tight mb-8">
-      Preservation and Luxury Unite
+      {data.title}
     </h2>
     <p class="text-gold-cream/70 leading-relaxed mb-8 max-w-2xl mx-auto">
-      Our eco-friendly accommodations and conservation initiatives ensure that the beauty of Africa is preserved for generations to come. We believe in responsible tourism that benefits both the environment and local communities.
+      {data.description}
     </p>
     <p class="font-heading text-sm tracking-[0.2em] uppercase text-gold mb-6">
-      One People. One Planet. One Nature.
+      {data.motto}
     </p>
     <blockquote class="font-display text-2xl md:text-3xl text-gold-cream/90 italic leading-relaxed max-w-3xl mx-auto">
-      "Beyond a stay, it is a captivating journey — a shared heartbeat with the Earth."
+      "{data.quote}"
     </blockquote>
   </div>
 </section>
