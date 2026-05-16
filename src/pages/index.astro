@@ -12,18 +12,39 @@ import BlogCarousel from '../components/BlogCarousel.astro';
 import TripPlanningCTA from '../components/TripPlanningCTA.astro';
 import Footer from '../components/Footer.astro';
 import MobileStickyBar from '../components/MobileStickyBar.astro';
+import { getSectionData } from '../lib/cms';
 
-const maraRiverImages = [
-  '/images/mara-river/bedroom1.webp',
-  '/images/mara-river/pool.webp',
-  '/images/mara-river/bedroom2.webp',
-];
+interface PropertyData {
+  location: string;
+  title: string;
+  description: string;
+  imageUrls: string[];
+  ctaText: string;
+  ctaLink: string;
+  reversed?: boolean;
+}
 
-const nyaruswigaImages = [
-  '/images/nyaruswiga/tent1.webp',
-  '/images/nyaruswiga/family-lounge.webp',
-  '/images/nyaruswiga/tent2.webp',
-];
+const fallbackMara: PropertyData = {
+  location: 'Serengeti National Park, Tanzania',
+  title: 'One Nature Mara River',
+  description: 'Seven luxurious villas situated in the heart of the Great Migration River Crossing.',
+  imageUrls: ['/images/mara-river/bedroom1.webp', '/images/mara-river/pool.webp', '/images/mara-river/bedroom2.webp'],
+  ctaText: 'Know More',
+  ctaLink: '/mara-river/',
+};
+
+const fallbackNya: PropertyData = {
+  location: 'Serengeti National Park, Tanzania',
+  title: 'One Nature Nyaruswiga',
+  description: 'Fourteen ultra-luxurious tents nestled in the Central Serengeti.',
+  imageUrls: ['/images/nyaruswiga/tent1.webp', '/images/nyaruswiga/family-lounge.webp', '/images/nyaruswiga/tent2.webp'],
+  ctaText: 'Know More',
+  ctaLink: '/nyaruswiga/',
+  reversed: true,
+};
+
+const maraData = await getSectionData<PropertyData>('section-property-mara-river', fallbackMara);
+const nyaData = await getSectionData<PropertyData>('section-property-nyaruswiga', fallbackNya);
 ---
 
 <Layout>
@@ -36,22 +57,9 @@ const nyaruswigaImages = [
   <main>
     <AboutSection />
 
-    <PropertyShowcase
-      location="Serengeti National Park, Tanzania"
-      title="One Nature Mara River"
-      description="Seven luxurious villas situated in the heart of the Great Migration River Crossing, offering an unparalleled safari experience with breathtaking views of the Mara River."
-      images={maraRiverImages}
-      ctaLink="/mara-river/"
-    />
+    <PropertyShowcase {...maraData} />
 
-    <PropertyShowcase
-      location="Serengeti National Park, Tanzania"
-      title="One Nature Nyaruswiga"
-      description="Fourteen ultra-luxurious tents nestled in the Central Serengeti, offering an exclusive and intimate safari experience with world-class amenities and stunning views."
-      images={nyaruswigaImages}
-      ctaLink="/nyaruswiga/"
-      reversed
-    />
+    <PropertyShowcase {...nyaData} />
 
     <WildernessSection />
 
