@@ -4,6 +4,7 @@ import md from '@studiocms/md';
 
 export default defineStudioCMSConfig({
   dbStartPage: false,
+  toolbar: false,
   plugins: [
     html(),
     md(),
