@@ -2,8 +2,27 @@
 import StarRating from './StarRating.astro';
 import GoldButton from './GoldButton.astro';
 import ScrollAnimation from './ScrollAnimation.astro';
+import { getSectionData } from '../lib/cms';
 
-const aboutImage = '/images/about/leopard.webp';
+interface AboutData {
+  subtitle: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  ctaText: string;
+  ctaLink: string;
+}
+
+const fallback: AboutData = {
+  subtitle: 'Two Nature Hotels',
+  title: 'Embrace Nature, Experience Luxury',
+  description: 'Two Nature Hotels is a collection of ultra-luxury boutique hotels and camps that balance premium luxury with unwavering ecological responsibility.',
+  imageUrl: '/images/about/leopard.webp',
+  ctaText: 'Know More',
+  ctaLink: '/about-us/',
+};
+
+const data = await getSectionData<AboutData>('section-about', fallback);
 ---
 
 <ScrollAnimation />
@@ -14,20 +33,20 @@ const aboutImage = '/images/about/leopard.webp';
       <div class="fade-in">
         <StarRating color="#C8A977" />
         <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold mt-6 mb-3">
-          Two Nature Hotels
+          {data.subtitle}
         </span>
         <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark leading-tight mb-6">
-          Embrace Nature, Experience Luxury
+          {data.title}
         </h2>
         <p class="text-text leading-relaxed mb-8">
-          Two Nature Hotels is a collection of ultra-luxury boutique hotels and camps that balance premium luxury with unwavering ecological responsibility. Our properties offer an exclusive and intimate safari experience in the heart of the Serengeti.
+          {data.description}
         </p>
-        <GoldButton href="/about-us/" text="Know More" />
+        <GoldButton href={data.ctaLink} text={data.ctaText} />
       </div>
       <div class="fade-in">
         <img
-          src={aboutImage}
-          alt="African leopard in the Serengeti"
+          src={data.imageUrl}
+          alt={data.title}
           class="w-full h-auto rounded shadow-xl"
           loading="lazy"
         />
