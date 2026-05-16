@@ -1,17 +1,70 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import HeroSlider from '../components/HeroSlider.astro';
+import BookingBar from '../components/BookingBar.astro';
+import AboutSection from '../components/AboutSection.astro';
+import PropertyShowcase from '../components/PropertyShowcase.astro';
+import WildernessSection from '../components/WildernessSection.astro';
+import ExperiencesSection from '../components/ExperiencesSection.astro';
+import SustainabilitySection from '../components/SustainabilitySection.astro';
+import BlogCarousel from '../components/BlogCarousel.astro';
+import TripPlanningCTA from '../components/TripPlanningCTA.astro';
+import Footer from '../components/Footer.astro';
+import MobileStickyBar from '../components/MobileStickyBar.astro';
 
+const maraRiverImages = [
+  'https://onenaturehotels.com/wp-content/uploads/2022/04/ONH-Web-OneBedroom-B-1200x914-2023.webp',
+  'https://onenaturehotels.com/wp-content/uploads/2022/04/ONH-Web-PrivatePool-B-1200x914-2023.webp',
+  'https://onenaturehotels.com/wp-content/uploads/2022/04/ONH-Web-LivingArea-B-1200x914-2023.webp',
+];
+
+const nyaruswigaImages = [
+  'https://onenaturehotels.com/wp-content/uploads/2023/09/ONH-NYA-Web-Tent-B-1200x914-2023.webp',
+  'https://onenaturehotels.com/wp-content/uploads/2023/09/ONH-NYA-Web-FamilyLounge-B-1200x914-2023.webp',
+  'https://onenaturehotels.com/wp-content/uploads/2023/09/ONH-NYA-Web-Deck-B-1200x914-2023.webp',
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <Navigation />
+
+  <HeroSlider>
+    <BookingBar slot="booking" />
+  </HeroSlider>
+
+  <main>
+    <AboutSection />
+
+    <PropertyShowcase
+      location="Serengeti National Park, Tanzania"
+      title="One Nature Mara River"
+      description="Seven luxurious villas situated in the heart of the Great Migration River Crossing, offering an unparalleled safari experience with breathtaking views of the Mara River."
+      images={maraRiverImages}
+      ctaLink="/mara-river/"
+    />
+
+    <PropertyShowcase
+      location="Serengeti National Park, Tanzania"
+      title="One Nature Nyaruswiga"
+      description="Fourteen ultra-luxurious tents nestled in the Central Serengeti, offering an exclusive and intimate safari experience with world-class amenities and stunning views."
+      images={nyaruswigaImages}
+      ctaLink="/nyaruswiga/"
+      reversed
+    />
+
+    <WildernessSection />
+
+    <ExperiencesSection />
+
+    <SustainabilitySection />
+
+    <BlogCarousel />
+
+    <TripPlanningCTA />
+  </main>
+
+  <Footer />
+
+  <MobileStickyBar />
+</Layout>
