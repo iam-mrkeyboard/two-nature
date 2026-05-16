@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "slug": "section-hero",
+    "title": "Hero Section",
+    "content": "{\"subtitle\":\"One People. One Planet. One Nature.\",\"title\":\"Embrace Nature\",\"backgroundImage\":\"/images/hero/banner.webp\",\"showStars\":true}"
+  },
+  "about": {
+    "slug": "section-about",
+    "title": "About Section",
+    "content": "{\"subtitle\":\"Two Nature Hotels\",\"title\":\"Embrace Nature, Experience Luxury\",\"description\":\"Two Nature Hotels is a collection of ultra-luxury boutique hotels and camps that balance premium luxury with unwavering ecological responsibility. Our properties offer an exclusive and intimate safari experience in the heart of the Serengeti.\",\"imageUrl\":\"/images/about/leopard.webp\",\"ctaText\":\"Know More\",\"ctaLink\":\"/about-us/\"}"
+  },
+  "property-mara-river": {
+    "slug": "section-property-mara-river",
+    "title": "Mara River Property",
+    "content": "{\"location\":\"Serengeti National Park, Tanzania\",\"title\":\"One Nature Mara River\",\"description\":\"Seven luxurious villas situated in the heart of the Great Migration River Crossing, offering an unparalleled safari experience with breathtaking views of the Mara River.\",\"imageUrls\":[\"/images/mara-river/bedroom1.webp\",\"/images/mara-river/pool.webp\",\"/images/mara-river/bedroom2.webp\"],\"ctaText\":\"Know More\",\"ctaLink\":\"/mara-river/\",\"reversed\":false}"
+  },
+  "property-nyaruswiga": {
+    "slug": "section-property-nyaruswiga",
+    "title": "Nyaruswiga Property",
+    "content": "{\"location\":\"Serengeti National Park, Tanzania\",\"title\":\"One Nature Nyaruswiga\",\"description\":\"Fourteen ultra-luxurious tents nestled in the Central Serengeti, offering an exclusive and intimate safari experience with world-class amenities and stunning views.\",\"imageUrls\":[\"/images/nyaruswiga/tent1.webp\",\"/images/nyaruswiga/family-lounge.webp\",\"/images/nyaruswiga/tent2.webp\"],\"ctaText\":\"Know More\",\"ctaLink\":\"/nyaruswiga/\",\"reversed\":true}"
+  },
+  "wilderness": {
+    "slug": "section-wilderness",
+    "title": "Wilderness Section",
+    "content": "{\"title\":\"Where Comfort and Luxury Meet Wilderness\",\"description\":\"Our exclusive and secluded destinations offer the perfect blend of premium comfort and raw natural beauty. Each property is carefully designed to immerse you in the African wilderness while providing world-class amenities and service.\",\"imageUrl\":\"/images/experiences/safari-drive.webp\"}"
+  },
+  "experiences": {
+    "slug": "section-experiences",
+    "title": "Experiences Section",
+    "content": "{\"subtitle\":\"Experiences\",\"title\":\"Enriching Experiences Await with Every Stay\",\"description\":\"From cultural delights to gastronomic experiences and thrilling adventures, every moment at Two Nature Hotels is designed to create lasting memories. Discover the magic of the Serengeti through our curated experiences.\",\"imageUrls\":[\"/images/hero/banner.webp\",\"/images/experiences/balloon-safari.webp\"],\"features\":[\"Hot Air Balloon Safaris\",\"Guided Game Drives\",\"Cultural Village Visits\",\"Bush Dining Experiences\"]}"
+  },
+  "sustainability": {
+    "slug": "section-sustainability",
+    "title": "Sustainability Section",
+    "content": "{\"subtitle\":\"Sustainability\",\"title\":\"Preservation and Luxury Unite\",\"description\":\"Our eco-friendly accommodations and conservation initiatives ensure that the beauty of Africa is preserved for generations to come. We believe in responsible tourism that benefits both the environment and local communities.\",\"motto\":\"One People. One Planet. One Nature.\",\"quote\":\"Beyond a stay, it is a captivating journey — a shared heartbeat with the Earth.\",\"bgImage\":\"/images/hero/banner.webp\"}"
+  },
+  "trip-planning": {
+    "slug": "section-trip-planning",
+    "title": "Trip Planning Section",
+    "content": "{\"title\":\"Let us plan your trip\",\"subtitle\":\"Discover Your Perfect Escape and Customize Your Journey\",\"features\":[\"Expert Guidance\",\"Personalized Itineraries\",\"Tailored Services\"],\"ctaText\":\"Contact Us\",\"ctaLink\":\"/contact-us/\",\"imageUrl\":\"/images/experiences/lioness-cub.webp\"}"
+  },
+  "footer": {
+    "slug": "section-footer",
+    "title": "Footer Section",
+    "content": "{\"logoUrl\":\"/images/logos/white.svg\",\"newsletterText\":\"Subscribe to Our Newsletter\",\"newsletterSubtext\":\"Stay updated with our latest news and offers\",\"phone\":[\"+971 4 558 6911\",\"+255 688 767676\"],\"address\":\"Arusha, Tanzania\",\"email\":\"info@onenaturehotels.com\",\"socialLinks\":[{\"name\":\"Facebook\",\"href\":\"https://www.facebook.com/onenatureresorts/\",\"icon\":\"facebook\"},{\"name\":\"Instagram\",\"href\":\"https://www.instagram.com/onenaturehotels/\",\"icon\":\"instagram\"},{\"name\":\"YouTube\",\"href\":\"https://www.youtube.com/@onenaturehotels\",\"icon\":\"youtube\"},{\"name\":\"TikTok\",\"href\":\"https://www.tiktok.com/@onenaturehotels\",\"icon\":\"tiktok\"},{\"name\":\"LinkedIn\",\"href\":\"https://www.linkedin.com/company/onenaturehotels\",\"icon\":\"linkedin\"},{\"name\":\"TripAdvisor\",\"href\":\"https://www.tripadvisor.com/Hotel_Review-g317730-d26398462-Reviews-One_Nature_Nyaruswiga-Serengeti_National_Park.html\",\"icon\":\"tripadvisor\"}],\"navItems\":[{\"label\":\"Home\",\"href\":\"/\"},{\"label\":\"About Us\",\"href\":\"/about-us/\"},{\"label\":\"Media\",\"href\":\"/media/\"},{\"label\":\"Blog\",\"href\":\"/blog/\"},{\"label\":\"Contact Us\",\"href\":\"/contact-us/\"}],\"legalLinks\":[{\"label\":\"Privacy Policy\",\"href\":\"/privacy-policy/\"},{\"label\":\"General Terms\",\"href\":\"/general-terms/\"},{\"label\":\"Trading Terms\",\"href\":\"/trading-terms/\"}]}"
+  }
+}
