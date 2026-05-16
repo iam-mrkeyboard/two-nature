@@ -5,34 +5,39 @@ interface Props {
 }
 
 const { images, class: className = '' } = Astro.props;
+const carouselId = `carousel-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<div class={`swiper onenature-carousel ${className}`}>
+<div class={`swiper onenature-carousel ${className}`} id={carouselId}>
   <div class="swiper-wrapper">
     {images.map((src) => (
       <div class="swiper-slide">
-        <img src={src} alt="" class="w-full h-auto object-cover" loading="lazy" />
+        <img src={src} alt="" class="w-full h-[300px] md:h-[400px] object-cover" loading="lazy" />
       </div>
     ))}
   </div>
-  <div class="swiper-button-prev !text-gold-cream !w-10 !h-10 after:!text-lg"></div>
-  <div class="swiper-button-next !text-gold-cream !w-10 !h-10 after:!text-lg"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
-<script is:inline>
-  import { Swiper } from 'swiper';
+<script define:vars={{ carouselId }}>
+  import Swiper from 'swiper';
   import { Navigation, EffectFade } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/effect-fade';
+  import 'swiper/css/navigation';
 
-  document.querySelectorAll('.onenature-carousel').forEach((el) => {
+  const el = document.getElementById(carouselId);
+  if (el) {
     new Swiper(el, {
       modules: [Navigation, EffectFade],
       effect: 'fade',
+      fadeEffect: { crossFade: true },
       speed: 800,
       navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+        nextEl: el.querySelector('.swiper-button-next'),
+        prevEl: el.querySelector('.swiper-button-prev'),
       },
     });
-  });
+  }
 </script>
