@@ -12,6 +12,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.3.3"
+    "@astrojs/node": "^10.1.1",
+    "@libsql/client": "^0.17.3",
+    "@studiocms/blog": "^0.3.0",
+    "@studiocms/html": "^0.3.0",
+    "@studiocms/md": "^0.3.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.3",
+    "kysely-turso": "^0.1.1",
+    "studiocms": "^0.4.4",
+    "swiper": "^12.1.4",
+    "tailwindcss": "^4.3.0"
   }
 }
