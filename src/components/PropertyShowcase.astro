@@ -3,37 +3,38 @@ import GoldButton from './GoldButton.astro';
 import ScrollAnimation from './ScrollAnimation.astro';
 import ImageCarousel from './ImageCarousel.astro';
 
-interface Props {
+interface PropertyData {
   location: string;
   title: string;
   description: string;
-  images: string[];
+  imageUrls: string[];
+  ctaText: string;
   ctaLink: string;
   reversed?: boolean;
 }
 
-const { location, title, description, images, ctaLink, reversed = false } = Astro.props;
+const props = Astro.props as PropertyData;
 ---
 
 <ScrollAnimation />
 
 <section class="section-padding bg-gold-cream">
   <div class="max-w-7xl mx-auto px-6">
-    <div class={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center ${reversed ? 'lg:flex-row-reverse' : ''}`}>
-      <div class={`fade-in ${reversed ? 'lg:order-2' : ''}`}>
+    <div class={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center ${props.reversed ? 'lg:flex-row-reverse' : ''}`}>
+      <div class={`fade-in ${props.reversed ? 'lg:order-2' : ''}`}>
         <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold mb-3">
-          {location}
+          {props.location}
         </span>
         <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark leading-tight mb-6">
-          {title}
+          {props.title}
         </h2>
         <p class="text-text leading-relaxed mb-8">
-          {description}
+          {props.description}
         </p>
-        <GoldButton href={ctaLink} text="Know More" />
+        <GoldButton href={props.ctaLink} text={props.ctaText} />
       </div>
-      <div class={`fade-in ${reversed ? 'lg:order-1' : ''}`}>
-        <ImageCarousel images={images} class="rounded shadow-xl" />
+      <div class={`fade-in ${props.reversed ? 'lg:order-1' : ''}`}>
+        <ImageCarousel images={props.imageUrls} class="rounded shadow-xl" />
       </div>
     </div>
   </div>
