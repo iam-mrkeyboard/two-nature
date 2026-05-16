@@ -1,0 +1,21 @@
+---
+interface Props {
+  subtitle?: string;
+  title: string;
+  light?: boolean;
+  centered?: boolean;
+}
+
+const { subtitle, title, light = false, centered = false } = Astro.props;
+---
+
+<div class:className={`section-header ${centered ? 'text-center' : ''}`}>
+  {subtitle && (
+    <span class={`block font-heading text-sm tracking-[0.2em] uppercase mb-3 ${light ? 'text-gold-cream/80' : 'text-gold'}`}>
+      {subtitle}
+    </span>
+  )}
+  <h2 class={`font-display text-4xl md:text-5xl font-semibold leading-tight ${light ? 'text-gold-cream' : 'text-dark'}`}>
+    {title}
+  </h2>
+</div>

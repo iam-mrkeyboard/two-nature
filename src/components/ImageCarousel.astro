@@ -1,0 +1,38 @@
+---
+interface Props {
+  images: string[];
+  class?: string;
+}
+
+const { images, class: className = '' } = Astro.props;
+---
+
+<div class={`swiper onenature-carousel ${className}`}>
+  <div class="swiper-wrapper">
+    {images.map((src) => (
+      <div class="swiper-slide">
+        <img src={src} alt="" class="w-full h-auto object-cover" loading="lazy" />
+      </div>
+    ))}
+  </div>
+  <div class="swiper-button-prev !text-gold-cream !w-10 !h-10 after:!text-lg"></div>
+  <div class="swiper-button-next !text-gold-cream !w-10 !h-10 after:!text-lg"></div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+<script is:inline>
+  import { Swiper } from 'swiper';
+  import { Navigation, EffectFade } from 'swiper/modules';
+
+  document.querySelectorAll('.onenature-carousel').forEach((el) => {
+    new Swiper(el, {
+      modules: [Navigation, EffectFade],
+      effect: 'fade',
+      speed: 800,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  });
+</script>
