@@ -1,7 +1,20 @@
 ---
 import ScrollAnimation from './ScrollAnimation.astro';
+import { getSectionData } from '../lib/cms';
 
-const wildernessImage = '/images/experiences/safari-drive.webp';
+interface WildernessData {
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
+const fallback: WildernessData = {
+  title: 'Where Comfort and Luxury Meet Wilderness',
+  description: 'Our exclusive and secluded destinations offer the perfect blend of premium comfort and raw natural beauty.',
+  imageUrl: '/images/experiences/safari-drive.webp',
+};
+
+const data = await getSectionData<WildernessData>('section-wilderness', fallback);
 ---
 
 <ScrollAnimation />
@@ -11,16 +24,16 @@ const wildernessImage = '/images/experiences/safari-drive.webp';
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="fade-in">
         <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark leading-tight mb-6">
-          Where Comfort and Luxury Meet Wilderness
+          {data.title}
         </h2>
         <p class="text-text leading-relaxed">
-          Our exclusive and secluded destinations offer the perfect blend of premium comfort and raw natural beauty. Each property is carefully designed to immerse you in the African wilderness while providing world-class amenities and service.
+          {data.description}
         </p>
       </div>
       <div class="fade-in">
         <img
-          src={wildernessImage}
-          alt="The Great Migration safari drive"
+          src={data.imageUrl}
+          alt={data.title}
           class="w-full h-auto rounded shadow-xl"
           loading="lazy"
         />
