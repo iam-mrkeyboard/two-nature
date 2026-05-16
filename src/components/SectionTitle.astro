@@ -9,7 +9,7 @@ interface Props {
 const { subtitle, title, light = false, centered = false } = Astro.props;
 ---
 
-<div class:className={`section-header ${centered ? 'text-center' : ''}`}>
+<div class={`section-header ${centered ? 'text-center' : ''}`}>
   {subtitle && (
     <span class={`block font-heading text-sm tracking-[0.2em] uppercase mb-3 ${light ? 'text-gold-cream/80' : 'text-gold'}`}>
       {subtitle}

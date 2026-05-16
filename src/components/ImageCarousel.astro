@@ -20,24 +20,20 @@ const carouselId = `carousel-${Math.random().toString(36).slice(2, 8)}`;
   <div class="swiper-button-next"></div>
 </div>
 
-<script define:vars={{ carouselId }}>
-  import Swiper from 'swiper';
-  import { Navigation, EffectFade } from 'swiper/modules';
-  import 'swiper/css';
-  import 'swiper/css/effect-fade';
-  import 'swiper/css/navigation';
-
-  const el = document.getElementById(carouselId);
-  if (el) {
-    new Swiper(el, {
-      modules: [Navigation, EffectFade],
-      effect: 'fade',
-      fadeEffect: { crossFade: true },
-      speed: 800,
-      navigation: {
-        nextEl: el.querySelector('.swiper-button-next'),
-        prevEl: el.querySelector('.swiper-button-prev'),
-      },
-    });
-  }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+<script is:inline define:vars={{ carouselId }}>
+  document.addEventListener('DOMContentLoaded', function() {
+    var el = document.getElementById(carouselId);
+    if (el && typeof Swiper !== 'undefined') {
+      new Swiper(el, {
+        effect: 'fade',
+        fadeEffect: { crossFade: true },
+        speed: 800,
+        navigation: {
+          nextEl: el.querySelector('.swiper-button-next'),
+          prevEl: el.querySelector('.swiper-button-prev'),
+        },
+      });
+    }
+  });
 </script>
