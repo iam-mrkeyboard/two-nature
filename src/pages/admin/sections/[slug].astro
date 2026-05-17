@@ -1,0 +1,194 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createClient } from '@libsql/client';
+
+const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+const slug = Astro.params.slug;
+
+if (!slug) {
+  return Astro.redirect('/admin/sections');
+}
+
+const sectionData = await db.execute({
+  sql: "SELECT pd.title, pc.content FROM StudioCMSPageData pd JOIN StudioCMSPageContent pc ON pd.id = pc.contentId WHERE pd.slug = ? AND pc.contentLang = 'en'",
+  args: [slug],
+});
+
+let content = {};
+let title = 'Section';
+
+if (sectionData.rows.length > 0) {
+  title = sectionData.rows[0].title as string;
+  try {
+    content = JSON.parse(sectionData.rows[0].content as string);
+  } catch {
+    content = {};
+  }
+}
+
+const sectionConfig: Record<string, { fields: string[]; title: string }> = {
+  'section-hero': {
+    title: 'Hero Section',
+    fields: ['subtitle', 'title', 'backgroundImage', 'showStars'],
+  },
+  'section-about': {
+    title: 'About Section',
+    fields: ['subtitle', 'title', 'description', 'imageUrl', 'ctaText', 'ctaLink'],
+  },
+  'section-property-mara-river': {
+    title: 'Mara River Property',
+    fields: ['location', 'title', 'description', 'imageUrls', 'ctaText', 'ctaLink'],
+  },
+  'section-property-nyaruswiga': {
+    title: 'Nyaruswiga Property',
+    fields: ['location', 'title', 'description', 'imageUrls', 'ctaText', 'ctaLink'],
+  },
+  'section-wilderness': {
+    title: 'Wilderness Section',
+    fields: ['title', 'description', 'imageUrl'],
+  },
+  'section-experiences': {
+    title: 'Experiences Section',
+    fields: ['subtitle', 'title', 'description', 'imageUrls', 'features'],
+  },
+  'section-sustainability': {
+    title: 'Sustainability Section',
+    fields: ['subtitle', 'title', 'description', 'motto', 'quote', 'bgImage'],
+  },
+  'section-trip-planning': {
+    title: 'Trip Planning Section',
+    fields: ['title', 'subtitle', 'features', 'ctaText', 'ctaLink', 'imageUrl'],
+  },
+  'section-footer': {
+    title: 'Footer Section',
+    fields: ['logoUrl', 'newsletterText', 'newsletterSubtext', 'phone', 'address', 'email', 'socialLinks', 'navItems', 'legalLinks'],
+  },
+};
+
+const config = sectionConfig[slug] || { title: 'Section', fields: [] };
+---
+
+<AdminLayout title={config.title}>
+  <div class="mb-8">
+    <a href="/admin/sections" class="text-gold-cream/50 hover:text-gold transition-colors text-sm mb-2 inline-block">&larr; Back to Sections</a>
+    <h2 class="font-display text-2xl text-gold-cream">{config.title}</h2>
+  </div>
+
+  <form id="sectionForm" class="max-w-3xl space-y-6" data-slug={slug}>
+    {config.fields.map((field) => {
+      const value = content[field];
+      const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
+
+      if (field === 'description' || field === 'quote') {
+        return (
+          <div>
+            <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label}</label>
+            <textarea
+              name={field}
+              rows={4}
+              class="w-full"
+            >{value || ''}</textarea>
+          </div>
+        );
+      }
+
+      if (field === 'imageUrls' || field === 'features' || field === 'phone' || field === 'socialLinks' || field === 'navItems' || field === 'legalLinks') {
+        return (
+          <div>
+            <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label} (JSON array)</label>
+            <textarea
+              name={field}
+              rows={4}
+              class="w-full font-mono text-sm"
+            >{JSON.stringify(value || [], null, 2)}</textarea>
+          </div>
+        );
+      }
+
+      if (field === 'showStars') {
+        return (
+          <div class="flex items-center gap-3">
+            <input type="checkbox" name={field} checked={value !== false} class="w-4 h-4 accent-gold" />
+            <label class="font-heading uppercase tracking-wider text-gold-cream/70 text-sm">{label}</label>
+          </div>
+        );
+      }
+
+      if (field.endsWith('Image') || field.endsWith('Url') || field === 'logoUrl' || field === 'bgImage') {
+        return (
+          <div>
+            <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label}</label>
+            <input type="text" name={field} value={value || ''} class="w-full" placeholder="/images/..." />
+            {value && <img src={value} alt="" class="mt-2 max-h-32 rounded border border-gold/20" />}
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label}</label>
+          <input type="text" name={field} value={value || ''} class="w-full" />
+        </div>
+      );
+    })}
+
+    <div class="flex items-center gap-4 pt-6 border-t border-gold/20">
+      <button type="submit" class="btn-gold" id="saveBtn">Save Changes</button>
+      <a href="/" target="_blank" class="text-gold-cream/50 hover:text-gold transition-colors text-sm">Preview Site</a>
+    </div>
+  </form>
+
+  <div id="saveStatus" class="mt-4 hidden">
+    <span class="text-gold text-sm">Changes saved successfully!</span>
+  </div>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById('sectionForm') as HTMLFormElement;
+  const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+  const saveStatus = document.getElementById('saveStatus');
+  const slug = form?.dataset.slug;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const formData = new FormData(form);
+    const data: Record<string, unknown> = {};
+
+    for (const [key, value] of formData.entries()) {
+      if (key === 'showStars') {
+        data[key] = formData.has('showStars');
+      } else if (key === 'imageUrls' || key === 'features' || key === 'phone' || key === 'socialLinks' || key === 'navItems' || key === 'legalLinks') {
+        try {
+          data[key] = JSON.parse(value as string);
+        } catch {
+          data[key] = value;
+        }
+      } else {
+        data[key] = value;
+      }
+    }
+
+    try {
+      const response = await fetch(`/api/admin/sections/${slug}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        saveStatus?.classList.remove('hidden');
+        setTimeout(() => saveStatus?.classList.add('hidden'), 3000);
+      } else {
+        alert('Failed to save changes');
+      }
+    } catch (error) {
+      alert('Error saving changes');
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Changes';
+  });
+</script>

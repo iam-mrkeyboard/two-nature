@@ -1,0 +1,98 @@
+---
+import '../styles/admin.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | Two Nature Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen bg-dark text-gold-cream">
+    <div class="flex min-h-screen">
+      <aside class="w-64 bg-dark border-r border-gold/20 flex-shrink-0 hidden md:block">
+        <div class="p-6 border-b border-gold/20">
+          <a href="/admin" class="font-display text-2xl text-gold font-semibold">Two Nature</a>
+          <p class="text-xs text-gold-cream/40 mt-1 uppercase tracking-wider">Admin Panel</p>
+        </div>
+        <nav class="p-4 space-y-1">
+          <a href="/admin" class="flex items-center gap-3 px-4 py-3 rounded text-gold-cream/70 hover:bg-gold/10 hover:text-gold transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+          <a href="/admin/sections" class="flex items-center gap-3 px-4 py-3 rounded text-gold-cream/70 hover:bg-gold/10 hover:text-gold transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h7"/></svg>
+            Sections
+          </a>
+          <a href="/admin/settings" class="flex items-center gap-3 px-4 py-3 rounded text-gold-cream/70 hover:bg-gold/10 hover:text-gold transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Settings
+          </a>
+        </nav>
+        <div class="absolute bottom-0 w-64 p-4 border-t border-gold/20">
+          <a href="/" target="_blank" class="flex items-center gap-2 text-gold-cream/50 hover:text-gold transition-colors text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            View Site
+          </a>
+        </div>
+      </aside>
+      <main class="flex-1 overflow-auto">
+        <header class="bg-dark/50 backdrop-blur-sm border-b border-gold/20 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+          <div class="flex items-center gap-4">
+            <button class="md:hidden text-gold-cream/70" id="menuToggle">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <h1 class="font-display text-xl text-gold">{title}</h1>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-gold-cream/50">Admin</span>
+            <form action="/api/admin/logout" method="POST">
+              <button type="submit" class="text-sm text-gold-cream/50 hover:text-gold transition-colors">Logout</button>
+            </form>
+          </div>
+        </header>
+        <div class="p-6">
+          <slot />
+        </div>
+      </main>
+    </div>
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+      <div class="bg-gold text-dark px-6 py-3 rounded shadow-lg font-heading uppercase tracking-wider text-sm">
+        <span id="toastMessage"></span>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  function showToast(message: string, duration = 3000) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    if (toast && toastMessage) {
+      toastMessage.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), duration);
+    }
+  }
+
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.querySelector('aside');
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      sidebar.classList.toggle('fixed');
+      sidebar.classList.toggle('inset-0');
+      sidebar.classList.toggle('z-50');
+    });
+  }
+</script>

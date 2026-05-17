@@ -1,0 +1,135 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createClient } from '@libsql/client';
+
+const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+
+const footerData = await db.execute({
+  sql: "SELECT pc.content FROM StudioCMSPageData pd JOIN StudioCMSPageContent pc ON pd.id = pc.contentId WHERE pd.slug = 'section-footer' AND pc.contentLang = 'en'",
+  args: [],
+});
+
+let footer = {
+  newsletterText: 'Subscribe to Our Newsletter',
+  newsletterSubtext: 'Stay updated with our latest news and offers',
+  phone: ['+971 4 558 6911', '+255 688 767676'],
+  address: 'Arusha, Tanzania',
+  email: 'info@onenaturehotels.com',
+  socialLinks: [
+    { name: 'Facebook', href: 'https://www.facebook.com/onenatureresorts/', icon: 'facebook' },
+    { name: 'Instagram', href: 'https://www.instagram.com/onenaturehotels/', icon: 'instagram' },
+    { name: 'YouTube', href: 'https://www.youtube.com/@onenaturehotels', icon: 'youtube' },
+  ],
+};
+
+if (footerData.rows.length > 0) {
+  try {
+    footer = { ...footer, ...JSON.parse(footerData.rows[0].content as string) };
+  } catch {}
+}
+---
+
+<AdminLayout title="Settings">
+  <div class="mb-8">
+    <h2 class="font-display text-2xl text-gold-cream mb-2">Site Settings</h2>
+    <p class="text-gold-cream/50">Manage footer content, contact info, and social links</p>
+  </div>
+
+  <form id="settingsForm" class="max-w-3xl space-y-8">
+    <div class="card">
+      <h3 class="font-heading uppercase tracking-wider text-gold text-sm mb-6">Newsletter</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block font-heading uppercase tracking-wider text-gold-cream/70 text-xs mb-2">Title</label>
+          <input type="text" name="newsletterText" value={footer.newsletterText} />
+        </div>
+        <div>
+          <label class="block font-heading uppercase tracking-wider text-gold-cream/70 text-xs mb-2">Subtitle</label>
+          <input type="text" name="newsletterSubtext" value={footer.newsletterSubtext} />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-heading uppercase tracking-wider text-gold text-sm mb-6">Contact Information</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block font-heading uppercase tracking-wider text-gold-cream/70 text-xs mb-2">Phone Numbers (one per line)</label>
+          <textarea name="phone" rows={3}>{(footer.phone || []).join('\n')}</textarea>
+        </div>
+        <div>
+          <label class="block font-heading uppercase tracking-wider text-gold-cream/70 text-xs mb-2">Address</label>
+          <input type="text" name="address" value={footer.address} />
+        </div>
+        <div>
+          <label class="block font-heading uppercase tracking-wider text-gold-cream/70 text-xs mb-2">Email</label>
+          <input type="email" name="email" value={footer.email} />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-heading uppercase tracking-wider text-gold text-sm mb-6">Social Links (JSON)</h3>
+      <textarea name="socialLinks" rows={8} class="font-mono text-sm">{JSON.stringify(footer.socialLinks || [], null, 2)}</textarea>
+    </div>
+
+    <div class="flex items-center gap-4 pt-6 border-t border-gold/20">
+      <button type="submit" class="btn-gold" id="saveBtn">Save Settings</button>
+    </div>
+  </form>
+
+  <div id="saveStatus" class="mt-4 hidden">
+    <span class="text-gold text-sm">Settings saved successfully!</span>
+  </div>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById('settingsForm') as HTMLFormElement;
+  const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+  const saveStatus = document.getElementById('saveStatus');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const formData = new FormData(form);
+    const data: Record<string, unknown> = {
+      newsletterText: formData.get('newsletterText'),
+      newsletterSubtext: formData.get('newsletterSubtext'),
+      phone: (formData.get('phone') as string).split('\n').filter(Boolean),
+      address: formData.get('address'),
+      email: formData.get('email'),
+    };
+
+    try {
+      const socialLinksRaw = formData.get('socialLinks') as string;
+      data.socialLinks = JSON.parse(socialLinksRaw);
+    } catch {
+      alert('Invalid JSON in social links');
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Settings';
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/sections/section-footer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        saveStatus?.classList.remove('hidden');
+        setTimeout(() => saveStatus?.classList.add('hidden'), 3000);
+      } else {
+        alert('Failed to save settings');
+      }
+    } catch {
+      alert('Error saving settings');
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Settings';
+  });
+</script>

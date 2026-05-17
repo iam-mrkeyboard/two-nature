@@ -1,0 +1,49 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createClient } from '@libsql/client';
+
+const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+
+const sections = await db.execute({
+  sql: "SELECT slug, title, updatedAt FROM StudioCMSPageData WHERE slug LIKE 'section-%' ORDER BY updatedAt DESC",
+  args: [],
+});
+
+const sectionList = [
+  { slug: 'section-hero', title: 'Hero Section', description: 'Main banner with title and background image' },
+  { slug: 'section-about', title: 'About Section', description: 'Brand introduction with leopard image' },
+  { slug: 'section-property-mara-river', title: 'Mara River Property', description: 'Property showcase with image carousel' },
+  { slug: 'section-property-nyaruswiga', title: 'Nyaruswiga Property', description: 'Property showcase with image carousel' },
+  { slug: 'section-wilderness', title: 'Wilderness Section', description: 'Luxury meets wilderness statement' },
+  { slug: 'section-experiences', title: 'Experiences Section', description: 'Activities and experiences list' },
+  { slug: 'section-sustainability', title: 'Sustainability Section', description: 'Eco-friendly brand philosophy' },
+  { slug: 'section-trip-planning', title: 'Trip Planning Section', description: 'Contact CTA with feature list' },
+  { slug: 'section-footer', title: 'Footer Section', description: 'Newsletter, links, contact, socials' },
+];
+---
+
+<AdminLayout title="Sections">
+  <div class="mb-8">
+    <h2 class="font-display text-2xl text-gold-cream mb-2">Homepage Sections</h2>
+    <p class="text-gold-cream/50">Edit content for each section of the homepage</p>
+  </div>
+
+  <div class="space-y-4">
+    {sectionList.map((section) => {
+      const sectionData = sections.rows.find(r => r.slug === section.slug);
+      const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt as string).toLocaleDateString() : 'Never';
+      return (
+        <div class="card flex items-center justify-between">
+          <div class="flex-1">
+            <h3 class="font-heading uppercase tracking-wider text-gold-cream text-sm mb-1">{section.title}</h3>
+            <p class="text-gold-cream/40 text-xs">{section.description}</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-xs text-gold-cream/30 hidden sm:block">Updated: {lastUpdated}</span>
+            <a href={`/admin/sections/${section.slug}`} class="btn-gold text-xs px-4 py-2">Edit</a>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</AdminLayout>

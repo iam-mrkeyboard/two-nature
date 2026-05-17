@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #C8A977;
+  --color-gold-light: #EADECA;
+  --color-gold-soft: #E2D0B6;
+  --color-gold-cream: #FAF8F5;
+  --color-gold-beige: #F8F5F0;
+  --color-dark: #1F1F1F;
+  --color-dark-surface: #2A2A2A;
+  --color-text: #777777;
+  --color-accent: #CDA787;
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-heading: 'Barlow Condensed', sans-serif;
+}
+
+body {
+  font-family: var(--font-display);
+}
+
+input, textarea, select {
+  background-color: var(--color-dark-surface);
+  border: 1px solid rgba(200, 169, 119, 0.3);
+  color: var(--color-gold-cream);
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  width: 100%;
+  font-family: var(--font-display);
+  transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(250, 248, 245, 0.4);
+}
+
+.btn-gold {
+  background-color: var(--color-gold);
+  color: var(--color-gold-cream);
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 2rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.875rem;
+}
+
+.btn-gold:hover {
+  background-color: var(--color-dark);
+  color: var(--color-gold);
+}
+
+.btn-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card {
+  background-color: var(--color-dark-surface);
+  border: 1px solid rgba(200, 169, 119, 0.2);
+  padding: 1.5rem;
+  transition: border-color 0.3s;
+}
+
+.card:hover {
+  border-color: rgba(200, 169, 119, 0.4);
+}
+
+.image-upload-zone {
+  border: 2px dashed rgba(200, 169, 119, 0.3);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.image-upload-zone:hover {
+  border-color: var(--color-gold);
+  background-color: rgba(200, 169, 119, 0.05);
+}
+
+.image-upload-zone.dragover {
+  border-color: var(--color-gold);
+  background-color: rgba(200, 169, 119, 0.1);
+}
