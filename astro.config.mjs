@@ -6,7 +6,7 @@ import studioCMS from 'studiocms';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://twonature.com/',
+  site: 'http://localhost:4321/',
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   integrations: [

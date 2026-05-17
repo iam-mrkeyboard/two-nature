@@ -17,6 +17,7 @@
     "@astrojs/check": "^0.9.9",
     "@astrojs/node": "^10.1.1",
     "@libsql/client": "^0.17.3",
+    "@node-rs/argon2": "^2.0.2",
     "@studiocms/blog": "^0.3.0",
     "@studiocms/html": "^0.3.0",
     "@studiocms/md": "^0.3.0",

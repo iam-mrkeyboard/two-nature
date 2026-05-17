@@ -1,5 +1,5 @@
 import { createClient } from '@libsql/client';
-import bcrypt from 'bcryptjs';
+import { hash } from '@node-rs/argon2';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -29,45 +29,40 @@ const db = createClient({ url: dbUrl });
 const username = 'admin';
 const email = 'admin@twonature.com';
 const displayName = 'Admin User';
-const password = 'admin123'; // Change this after first login!
+const password = 'admin123';
 
 async function createAdminUser() {
-  console.log('Creating admin user...');
+  console.log('Creating admin user with argon2 hashing...');
   console.log(`Username: ${username}`);
-  console.log(`Email: ${email}`);
   console.log(`Password: ${password}`);
   console.log('');
 
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 10);
-  console.log('Password hashed successfully');
+  // Hash password with argon2 (StudioCMS default)
+  const hashedPassword = await hash(password, {
+    memoryCost: 19456,
+    timeCost: 2,
+    outputLen: 32,
+    parallelism: 1,
+  });
+  console.log('Password hashed with argon2');
 
   const now = new Date().toISOString();
   const userId = `user-${Date.now()}`;
 
-  // Check if user already exists
-  const existing = await db.execute({
-    sql: 'SELECT id FROM StudioCMSUsersTable WHERE username = ? OR email = ?',
+  // Remove existing admin user if exists
+  await db.execute({
+    sql: 'DELETE FROM StudioCMSUsersTable WHERE username = ? OR email = ?',
     args: [username, email],
   });
 
-  if (existing.rows.length > 0) {
-    console.log('User already exists, updating...');
-    await db.execute({
-      sql: 'UPDATE StudioCMSUsersTable SET password = ?, updatedAt = ? WHERE id = ?',
-      args: [hashedPassword, now, existing.rows[0].id],
-    });
-    console.log('User updated successfully!');
-  } else {
-    // Insert new user
-    await db.execute({
-      sql: `INSERT INTO StudioCMSUsersTable 
-        (id, username, name, email, password, emailVerified, createdAt, updatedAt) 
-        VALUES (?, ?, ?, ?, ?, 1, ?, ?)`,
-      args: [userId, username, displayName, email, hashedPassword, now, now],
-    });
-    console.log('User created successfully!');
-  }
+  // Insert new user
+  await db.execute({
+    sql: `INSERT INTO StudioCMSUsersTable 
+      (id, username, name, email, password, emailVerified, createdAt, updatedAt) 
+      VALUES (?, ?, ?, ?, ?, 1, ?, ?)`,
+    args: [userId, username, displayName, email, hashedPassword, now, now],
+  });
+  console.log('User created successfully!');
 
   console.log('');
   console.log('=== Login Credentials ===');
@@ -75,7 +70,6 @@ async function createAdminUser() {
   console.log(`Password: ${password}`);
   console.log('');
   console.log('Go to http://localhost:4321/dashboard/login and use these credentials.');
-  console.log('IMPORTANT: Change the password after your first login!');
 }
 
 createAdminUser().catch(console.error);
