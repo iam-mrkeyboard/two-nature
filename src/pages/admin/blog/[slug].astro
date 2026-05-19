@@ -1,0 +1,348 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+
+const slug = Astro.params.slug;
+const isNew = slug === 'new';
+
+let post = null;
+let content: Record<string, unknown> = {};
+let title = 'New Blog Post';
+
+if (!isNew && slug) {
+  post = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
+  if (post) {
+    title = post.title ?? 'Blog Post';
+    if (post.defaultContent?.content) {
+      try {
+        content = JSON.parse(post.defaultContent.content);
+      } catch {
+        content = {};
+      }
+    }
+  }
+}
+---
+
+<AdminLayout title={isNew ? 'New Post' : title}>
+  <div class="mb-8">
+    <a href="/admin/blog" class="text-gold-cream/50 hover:text-gold transition-colors text-sm mb-2 inline-block">&larr; Back to Blog</a>
+    <h2 class="font-display text-2xl text-gold-cream">{isNew ? 'New Blog Post' : title}</h2>
+  </div>
+
+  <form id="blogForm" class="max-w-3xl space-y-6" data-slug={isNew ? '' : slug}>
+    <div>
+      <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Title</label>
+      <input type="text" name="title" value={content.title as string || ''} class="w-full" placeholder="Post title" id="input-title" />
+    </div>
+
+    <div>
+      <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Slug</label>
+      <input type="text" name="slug" value={isNew ? '' : slug} class="w-full" placeholder="post-slug" id="input-slug" disabled={!isNew} />
+      {isNew && <p class="text-gold-cream/30 text-xs mt-1">Will be prefixed with "blog-"</p>}
+    </div>
+
+    <div>
+      <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Description</label>
+      <input type="text" name="description" value={content.description as string || ''} class="w-full" placeholder="Short description" />
+    </div>
+
+    <div>
+      <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Hero Image</label>
+      <div class="flex gap-4 items-start">
+        <div class="flex-1">
+          <div class="flex gap-2">
+            <input type="text" name="heroImage" value={content.heroImage as string || ''} class="flex-1" placeholder="/images/..." id="input-heroImage" />
+            <button type="button" class="btn-gold text-xs px-3 py-2 whitespace-nowrap browse-gallery-btn" data-field="heroImage">Browse</button>
+          </div>
+          {content.heroImage && <img src={content.heroImage as string} alt="" class="mt-2 max-h-32 rounded border border-gold/20" />}
+        </div>
+        <div class="upload-zone w-32 h-32 border-2 border-dashed border-gold/30 rounded flex flex-col items-center justify-center cursor-pointer hover:border-gold/60 transition-colors" data-field="heroImage">
+          <svg class="w-6 h-6 text-gold/50 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          <span class="text-gold/50 text-xs">Drop image</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">Content</label>
+      <textarea id="editor-content" name="content" rows={10} class="w-full" data-rich>{(content.content as string) || ''}</textarea>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <input type="checkbox" name="draft" checked={(content.draft as boolean) !== false} class="w-4 h-4 accent-gold" id="input-draft" />
+      <label for="input-draft" class="font-heading uppercase tracking-wider text-gold-cream/70 text-sm">Save as Draft</label>
+    </div>
+
+    <div class="flex items-center gap-4 pt-6 border-t border-gold/20">
+      <button type="submit" class="btn-gold" id="saveBtn">Save Post</button>
+      {isNew && <a href="/admin/blog" class="text-gold-cream/50 hover:text-gold transition-colors text-sm">Cancel</a>}
+    </div>
+  </form>
+
+  <div id="saveStatus" class="mt-4 hidden">
+    <span class="text-gold text-sm">Post saved successfully!</span>
+  </div>
+
+  <div id="imagePickerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80">
+    <div class="bg-charcoal border border-gold/30 rounded-lg max-w-4xl w-full mx-4 max-h-[80vh] flex flex-col">
+      <div class="flex items-center justify-between p-4 border-b border-gold/20">
+        <h3 class="font-heading uppercase tracking-wider text-gold text-lg">Select Image</h3>
+        <button type="button" id="closePicker" class="text-gold-cream/50 hover:text-gold transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto flex-1">
+        <div class="flex gap-2 mb-4">
+          <button type="button" class="filter-btn btn-gold text-xs px-3 py-1" data-filter="">All</button>
+          <button type="button" class="filter-btn text-gold-cream/50 hover:text-gold text-xs px-3 py-1 border border-gold/20 rounded transition-colors" data-filter="hero">Hero</button>
+          <button type="button" class="filter-btn text-gold-cream/50 hover:text-gold text-xs px-3 py-1 border border-gold/20 rounded transition-colors" data-filter="about">About</button>
+          <button type="button" class="filter-btn text-gold-cream/50 hover:text-gold text-xs px-3 py-1 border border-gold/20 rounded transition-colors" data-filter="blog">Blog</button>
+        </div>
+        <div id="imageGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+          <div class="col-span-full text-center text-gold-cream/30 py-8">Loading images...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import tinymce from 'tinymce/tinymce';
+
+  const form = document.getElementById('blogForm') as HTMLFormElement;
+  const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+  const saveStatus = document.getElementById('saveStatus');
+  const slug = form?.dataset.slug;
+  const isNew = !slug;
+
+  const richTextarea = document.getElementById('editor-content') as HTMLTextAreaElement;
+  if (richTextarea) {
+    tinymce.init({
+      target: richTextarea,
+      plugins: 'lists link bullist numlist hr wordcount',
+      menubar: false,
+      statusbar: false,
+      height: 400,
+      skin: 'oxide-dark',
+      content_css: 'dark',
+      toolbar: 'undo redo | bullist numlist | link hr | wordcount',
+      setup: (editor) => {
+        editor.on('change', () => {
+          editor.save();
+        });
+      },
+    });
+  }
+
+  const uploadZones = document.querySelectorAll('.upload-zone');
+  uploadZones.forEach((zone) => {
+    const htmlZone = zone as HTMLElement;
+    const field = htmlZone.dataset.field;
+    const input = document.getElementById(`input-${field}`) as HTMLInputElement;
+
+    htmlZone.addEventListener('click', () => {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.onchange = async () => {
+        const file = fileInput.files?.[0];
+        if (file) {
+          await uploadFile(file, input, htmlZone);
+        }
+      };
+      fileInput.click();
+    });
+
+    htmlZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      htmlZone.classList.add('border-gold', 'bg-gold/5');
+    });
+
+    htmlZone.addEventListener('dragleave', () => {
+      htmlZone.classList.remove('border-gold', 'bg-gold/5');
+    });
+
+    htmlZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      htmlZone.classList.remove('border-gold', 'bg-gold/5');
+      if (!e.dataTransfer) return;
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        await uploadFile(file, input, htmlZone);
+      }
+    });
+  });
+
+  async function uploadFile(file: File, input: HTMLInputElement, zone: HTMLElement) {
+    zone.innerHTML = '<span class="text-gold text-xs">Uploading...</span>';
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('section', 'blog');
+
+    try {
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.success) {
+        input.value = data.url;
+        zone.innerHTML = '<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        setTimeout(() => {
+          zone.innerHTML = '<svg class="w-6 h-6 text-gold/50 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg><span class="text-gold/50 text-xs">Drop image</span>';
+        }, 2000);
+      } else {
+        zone.innerHTML = '<span class="text-red-500 text-xs">Failed</span>';
+      }
+    } catch {
+      zone.innerHTML = '<span class="text-red-500 text-xs">Error</span>';
+    }
+  }
+
+  let currentTargetInput: HTMLInputElement | null = null;
+  const modal = document.getElementById('imagePickerModal') as HTMLElement;
+  const closePicker = document.getElementById('closePicker');
+  const imageGrid = document.getElementById('imageGrid');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  let allImages: { url: string; name: string; section: string }[] = [];
+
+  document.querySelectorAll('.browse-gallery-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const field = (btn as HTMLElement).dataset.field;
+      currentTargetInput = document.getElementById(`input-${field}`) as HTMLInputElement;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      if (imageGrid && imageGrid.children.length === 1) {
+        try {
+          const res = await fetch('/api/admin/images');
+          const data = await res.json();
+          if (data.success) {
+            allImages = data.images;
+            renderImages(allImages);
+          }
+        } catch {
+          if (imageGrid) {
+            imageGrid.innerHTML = '<div class="col-span-full text-center text-red-500 py-8">Failed to load images</div>';
+          }
+        }
+      }
+    });
+  });
+
+  closePicker?.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  });
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  });
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('btn-gold');
+        b.classList.add('text-gold-cream/50', 'border', 'border-gold/20');
+      });
+      btn.classList.add('btn-gold');
+      btn.classList.remove('text-gold-cream/50', 'border', 'border-gold/20');
+
+      const filter = (btn as HTMLElement).dataset.filter || '';
+      if (filter) {
+        renderImages(allImages.filter((img) => img.section === filter));
+      } else {
+        renderImages(allImages);
+      }
+    });
+  });
+
+  function renderImages(images: { url: string; name: string; section: string }[]) {
+    if (!imageGrid) return;
+    if (images.length === 0) {
+      imageGrid.innerHTML = '<div class="col-span-full text-center text-gold-cream/30 py-8">No images found</div>';
+      return;
+    }
+    imageGrid.innerHTML = images.map((img) => `
+      <div class="image-item cursor-pointer border border-gold/20 rounded overflow-hidden hover:border-gold transition-colors group" data-url="${img.url}">
+        <div class="aspect-square bg-charcoal-light relative overflow-hidden">
+          <img src="${img.url}" alt="${img.name}" class="w-full h-full object-cover" loading="lazy" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 text-gold text-xs font-heading uppercase tracking-wider">Select</span>
+          </div>
+        </div>
+        <div class="p-2">
+          <p class="text-gold-cream/60 text-xs truncate">${img.name}</p>
+        </div>
+      </div>
+    `).join('');
+
+    imageGrid.querySelectorAll('.image-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        const url = (item as HTMLElement).dataset.url;
+        if (url && currentTargetInput) {
+          currentTargetInput.value = url;
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+      });
+    });
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    if (richTextarea) {
+      const editor = tinymce.get(richTextarea.id);
+      if (editor) {
+        editor.save();
+      }
+    }
+
+    const formData = new FormData(form);
+    const data: Record<string, unknown> = {
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      description: formData.get('description'),
+      heroImage: formData.get('heroImage'),
+      content: formData.get('content'),
+      draft: formData.has('draft'),
+    };
+
+    try {
+      const endpoint = isNew ? '/api/admin/blog' : `/api/admin/blog/${slug}`;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        if (isNew) {
+          const result = await response.json();
+          window.location.href = `/admin/blog/${result.slug}`;
+        } else {
+          saveStatus?.classList.remove('hidden');
+          setTimeout(() => saveStatus?.classList.add('hidden'), 3000);
+        }
+      } else {
+        alert('Failed to save post');
+      }
+    } catch {
+      alert('Error saving post');
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Post';
+  });
+</script>
