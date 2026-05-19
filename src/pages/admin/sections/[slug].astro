@@ -117,8 +117,18 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
         return (
           <div>
             <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label}</label>
-            <input type="text" name={field} value={value || ''} class="w-full" placeholder="/images/..." />
-            {value && <img src={value} alt="" class="mt-2 max-h-32 rounded border border-gold/20" />}
+            <div class="flex gap-4 items-start">
+              <div class="flex-1">
+                <input type="text" name={field} value={value || ''} class="w-full" placeholder="/images/..." id={`input-${field}`} />
+                {value && <img src={value} alt="" class="mt-2 max-h-32 rounded border border-gold/20" />}
+              </div>
+              <div class="upload-zone w-32 h-32 border-2 border-dashed border-gold/30 rounded flex flex-col items-center justify-center cursor-pointer hover:border-gold/60 transition-colors" data-field={field}>
+                <svg class="w-6 h-6 text-gold/50 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <span class="text-gold/50 text-xs">Drop image</span>
+              </div>
+            </div>
           </div>
         );
       }
@@ -168,6 +178,71 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
       },
     });
   });
+
+  const uploadZones = document.querySelectorAll('.upload-zone');
+  uploadZones.forEach((zone) => {
+    const htmlZone = zone as HTMLElement;
+    const field = htmlZone.dataset.field;
+    const input = document.getElementById(`input-${field}`) as HTMLInputElement;
+
+    htmlZone.addEventListener('click', () => {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.onchange = async () => {
+        const file = fileInput.files?.[0];
+        if (file) {
+          await uploadFile(file, input, htmlZone);
+        }
+      };
+      fileInput.click();
+    });
+
+    htmlZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      htmlZone.classList.add('border-gold', 'bg-gold/5');
+    });
+
+    htmlZone.addEventListener('dragleave', () => {
+      htmlZone.classList.remove('border-gold', 'bg-gold/5');
+    });
+
+    htmlZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      htmlZone.classList.remove('border-gold', 'bg-gold/5');
+      if (!e.dataTransfer) return;
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        await uploadFile(file, input, htmlZone);
+      }
+    });
+  });
+
+  async function uploadFile(file: File, input: HTMLInputElement, zone: HTMLElement) {
+    zone.innerHTML = '<span class="text-gold text-xs">Uploading...</span>';
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('section', slug || 'uploads');
+
+    try {
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.success) {
+        input.value = data.url;
+        zone.innerHTML = '<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        setTimeout(() => {
+          zone.innerHTML = '<svg class="w-6 h-6 text-gold/50 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg><span class="text-gold/50 text-xs">Drop image</span>';
+        }, 2000);
+      } else {
+        zone.innerHTML = '<span class="text-red-500 text-xs">Failed</span>';
+      }
+    } catch {
+      zone.innerHTML = '<span class="text-red-500 text-xs">Error</span>';
+    }
+  }
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
