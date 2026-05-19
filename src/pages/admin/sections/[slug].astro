@@ -80,9 +80,11 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
           <div>
             <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label}</label>
             <textarea
+              id={`editor-${field}`}
               name={field}
               rows={4}
               class="w-full"
+              data-rich
             >{value || ''}</textarea>
           </div>
         );
@@ -141,15 +143,43 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
 </AdminLayout>
 
 <script>
+  import tinymce from 'tinymce/tinymce';
+
   const form = document.getElementById('sectionForm') as HTMLFormElement;
   const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
   const saveStatus = document.getElementById('saveStatus');
   const slug = form?.dataset.slug;
 
+  const textareas = document.querySelectorAll('textarea[data-rich]');
+  textareas.forEach((textarea) => {
+    tinymce.init({
+      target: textarea as HTMLTextAreaElement,
+      plugins: 'lists link bullist numlist hr wordcount',
+      menubar: false,
+      statusbar: false,
+      height: 300,
+      skin: 'oxide-dark',
+      content_css: 'dark',
+      toolbar: 'undo redo | bullist numlist | link hr | wordcount',
+      setup: (editor) => {
+        editor.on('change', () => {
+          editor.save();
+        });
+      },
+    });
+  });
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
+
+    textareas.forEach((textarea) => {
+      const editor = tinymce.get(textarea.id);
+      if (editor) {
+        editor.save();
+      }
+    });
 
     const formData = new FormData(form);
     const data: Record<string, unknown> = {};

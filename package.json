@@ -29,6 +29,7 @@
     "studiocms": "^0.4.4",
     "swiper": "^12.1.4",
     "tailwindcss": "^4.3.0",
+    "tinymce": "^8.5.0",
     "typescript": "^6.0.3"
   }
 }
