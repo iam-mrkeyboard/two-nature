@@ -1,4 +1,4 @@
-export async function POST({ cookies, redirect }) {
-  cookies.delete('auth_session', { path: '/' });
+export async function POST({ session, redirect }) {
+  await session.destroy();
   return redirect('/admin/login');
 }

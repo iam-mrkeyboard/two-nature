@@ -1,13 +1,9 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { createClient } from '@libsql/client';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
-
-const sections = await db.execute({
-  sql: "SELECT slug, title, updatedAt FROM StudioCMSPageData WHERE slug LIKE 'section-%' ORDER BY updatedAt DESC",
-  args: [],
-});
+const pages = await runSDK(SDKCoreJs.GET.pages());
+const sectionPages = pages.filter((p: { slug: string }) => p.slug?.startsWith('section-'));
 
 const sectionCards = [
   { slug: 'section-hero', title: 'Hero Section', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -30,7 +26,7 @@ const sectionCards = [
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
     {sectionCards.map((section) => {
-      const sectionData = sections.rows.find(r => r.slug === section.slug);
+      const sectionData = sectionPages.find((p: { slug: string }) => p.slug === section.slug);
       const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt as string).toLocaleDateString() : 'Never';
       return (
         <a href={`/admin/sections/${section.slug}`} class="card block group">

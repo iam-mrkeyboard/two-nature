@@ -1,13 +1,9 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
-import { createClient } from '@libsql/client';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
-
-const sections = await db.execute({
-  sql: "SELECT slug, title, updatedAt FROM StudioCMSPageData WHERE slug LIKE 'section-%' ORDER BY updatedAt DESC",
-  args: [],
-});
+const pages = await runSDK(SDKCoreJs.GET.pages());
+const sectionPages = pages.filter((p: { slug: string }) => p.slug?.startsWith('section-'));
 
 const sectionList = [
   { slug: 'section-hero', title: 'Hero Section', description: 'Main banner with title and background image' },
@@ -30,7 +26,7 @@ const sectionList = [
 
   <div class="space-y-4">
     {sectionList.map((section) => {
-      const sectionData = sections.rows.find(r => r.slug === section.slug);
+      const sectionData = sectionPages.find((p: { slug: string }) => p.slug === section.slug);
       const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt as string).toLocaleDateString() : 'Never';
       return (
         <div class="card flex items-center justify-between">

@@ -9,6 +9,12 @@ export default defineConfig({
   site: 'http://localhost:4321/',
   output: 'server',
   adapter: node({ mode: 'standalone' }),
+  session: {
+    driver: {
+      entrypoint: 'unstorage/drivers/fs',
+      config: { base: './.sessions' },
+    },
+  },
   integrations: [
     studioCMS(),
   ],

@@ -1,4 +1,4 @@
-import { createClient } from '@libsql/client';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
 export async function POST({ request, params }) {
   try {
@@ -11,35 +11,21 @@ export async function POST({ request, params }) {
     }
 
     const data = await request.json();
-    const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+    const page = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
-    // Get page ID
-    const pageResult = await db.execute({
-      sql: 'SELECT id, title FROM StudioCMSPageData WHERE slug = ?',
-      args: [slug],
-    });
-
-    if (pageResult.rows.length === 0) {
+    if (!page || !page.defaultContent) {
       return new Response(JSON.stringify({ error: 'Section not found' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const pageId = pageResult.rows[0].id;
-    const now = new Date().toISOString();
-
-    // Update page data
-    await db.execute({
-      sql: 'UPDATE StudioCMSPageData SET title = ?, updatedAt = ? WHERE id = ?',
-      args: [data.title || pageResult.rows[0].title, now, pageId],
-    });
-
-    // Update content
-    await db.execute({
-      sql: 'UPDATE StudioCMSPageContent SET content = ? WHERE contentId = ? AND contentLang = ?',
-      args: [JSON.stringify(data), pageId, 'en'],
-    });
+    await runSDK(SDKCoreJs.UPDATE.pageContent({
+      id: page.defaultContent.id,
+      contentId: page.id,
+      contentLang: 'en',
+      content: JSON.stringify(data),
+    }));
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

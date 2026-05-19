@@ -1,13 +1,8 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { createClient } from '@libsql/client';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
-
-const footerData = await db.execute({
-  sql: "SELECT pc.content FROM StudioCMSPageData pd JOIN StudioCMSPageContent pc ON pd.id = pc.contentId WHERE pd.slug = 'section-footer' AND pc.contentLang = 'en'",
-  args: [],
-});
+const page = await runSDK(SDKCoreJs.GET.page.bySlug('section-footer'));
 
 let footer = {
   newsletterText: 'Subscribe to Our Newsletter',
@@ -22,9 +17,9 @@ let footer = {
   ],
 };
 
-if (footerData.rows.length > 0) {
+if (page?.defaultContent?.content) {
   try {
-    footer = { ...footer, ...JSON.parse(footerData.rows[0].content as string) };
+    footer = { ...footer, ...JSON.parse(page.defaultContent.content) };
   } catch {}
 }
 ---

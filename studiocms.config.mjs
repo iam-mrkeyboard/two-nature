@@ -8,7 +8,7 @@ export default defineStudioCMSConfig({
   requireEmailVerification: false,
   features: {
     authConfig: {
-      enabled: true,
+      enabled: false,
       providers: {
         usernameAndPassword: true,
         usernameAndPasswordConfig: {

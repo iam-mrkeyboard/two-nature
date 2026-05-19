@@ -1,30 +1,10 @@
-import { createClient } from '@libsql/client';
-
-let dbClient: ReturnType<typeof createClient> | null = null;
-
-function getDb() {
-  if (!dbClient) {
-    const url = process.env.CMS_LIBSQL_URL || 'file:./twonature.db';
-    dbClient = createClient({ url });
-  }
-  return dbClient;
-}
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
 export async function getSectionData<T>(slug: string, fallback: T): Promise<T> {
   try {
-    const db = getDb();
-    const result = await db.execute({
-      sql: `
-        SELECT pc.content 
-        FROM StudioCMSPageData pd
-        JOIN StudioCMSPageContent pc ON pd.id = pc.contentId
-        WHERE pd.slug = ? AND pc.contentLang = 'en'
-      `,
-      args: [slug],
-    });
-
-    if (result.rows.length > 0) {
-      return JSON.parse(result.rows[0].content as string) as T;
+    const page = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
+    if (page?.defaultContent?.content) {
+      return JSON.parse(page.defaultContent.content) as T;
     }
   } catch (err) {
     console.warn(`Failed to fetch section "${slug}", using fallback:`, err);
@@ -34,22 +14,12 @@ export async function getSectionData<T>(slug: string, fallback: T): Promise<T> {
 
 export async function getAllSections() {
   try {
-    const db = getDb();
-    const result = await db.execute({
-      sql: `
-        SELECT pd.slug, pd.title, pc.content 
-        FROM StudioCMSPageData pd
-        JOIN StudioCMSPageContent pc ON pd.id = pc.contentId
-        WHERE pd.package = 'studiocms' AND pc.contentLang = 'en'
-        AND pd.slug LIKE 'section-%'
-      `,
-      args: [],
-    });
-
+    const pages = await runSDK(SDKCoreJs.GET.pages());
     const sections: Record<string, unknown> = {};
-    for (const row of result.rows) {
-      const slug = row.slug as string;
-      sections[slug] = JSON.parse(row.content as string);
+    for (const page of pages) {
+      if (page.slug?.startsWith('section-') && page.defaultContent?.content) {
+        sections[page.slug] = JSON.parse(page.defaultContent.content);
+      }
     }
     return sections;
   } catch (err) {

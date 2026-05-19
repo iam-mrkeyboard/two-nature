@@ -1,8 +1,7 @@
-import { createClient } from '@libsql/client';
 import { verify } from '@node-rs/argon2';
-import crypto from 'crypto';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-export async function POST({ request, cookies }) {
+export async function POST({ request, session }) {
   try {
     const { username, password } = await request.json();
 
@@ -13,24 +12,15 @@ export async function POST({ request, cookies }) {
       });
     }
 
-    const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+    const user = await runSDK(SDKCoreJs.GET.users.byUsername(username));
 
-    // Find user
-    const users = await db.execute({
-      sql: 'SELECT id, username, password FROM StudioCMSUsersTable WHERE username = ?',
-      args: [username],
-    });
-
-    if (users.rows.length === 0) {
+    if (!user || !user.password) {
       return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const user = users.rows[0];
-
-    // Verify password
     const isValid = await verify(user.password, password);
     if (!isValid) {
       return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
@@ -39,25 +29,10 @@ export async function POST({ request, cookies }) {
       });
     }
 
-    // Create session
-    const sessionId = crypto.randomUUID();
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    await session.set('userId', user.id);
+    await session.set('username', user.username);
 
-    await db.execute({
-      sql: 'INSERT INTO StudioCMSSessionTable (id, userId, expiresAt) VALUES (?, ?, ?)',
-      args: [sessionId, user.id, expiresAt],
-    });
-
-    // Set session cookie
-    cookies.set('auth_session', sessionId, {
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60,
-    });
-
-    return new Response(JSON.stringify({ success: true, redirect: '/dashboard' }), {
+    return new Response(JSON.stringify({ success: true, redirect: '/admin' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

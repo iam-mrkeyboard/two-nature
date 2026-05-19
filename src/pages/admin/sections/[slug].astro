@@ -1,28 +1,26 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
-import { createClient } from '@libsql/client';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
 const slug = Astro.params.slug;
 
 if (!slug) {
   return Astro.redirect('/admin/sections');
 }
 
-const sectionData = await db.execute({
-  sql: "SELECT pd.title, pc.content FROM StudioCMSPageData pd JOIN StudioCMSPageContent pc ON pd.id = pc.contentId WHERE pd.slug = ? AND pc.contentLang = 'en'",
-  args: [slug],
-});
+const page = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
 let content = {};
 let title = 'Section';
 
-if (sectionData.rows.length > 0) {
-  title = sectionData.rows[0].title as string;
-  try {
-    content = JSON.parse(sectionData.rows[0].content as string);
-  } catch {
-    content = {};
+if (page) {
+  title = page.title ?? 'Section';
+  if (page.defaultContent?.content) {
+    try {
+      content = JSON.parse(page.defaultContent.content);
+    } catch {
+      content = {};
+    }
   }
 }
 
