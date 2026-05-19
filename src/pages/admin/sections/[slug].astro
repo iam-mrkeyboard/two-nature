@@ -151,7 +151,10 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
   </form>
 
   <div id="saveStatus" class="mt-4 hidden">
-    <span class="text-gold text-sm">Changes saved successfully!</span>
+    <div class="flex items-center gap-4">
+      <span class="text-gold text-sm">Changes saved successfully!</span>
+      <a href="/" target="_blank" id="previewChangesBtn" class="btn-gold text-xs px-4 py-2">Preview Changes</a>
+    </div>
   </div>
 
   <div id="imagePickerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80">
@@ -404,8 +407,11 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
       });
 
       if (response.ok) {
+        const previewBtn = document.getElementById('previewChangesBtn') as HTMLAnchorElement;
+        if (previewBtn) {
+          previewBtn.href = `/?t=${Date.now()}`;
+        }
         saveStatus?.classList.remove('hidden');
-        setTimeout(() => saveStatus?.classList.add('hidden'), 3000);
       } else {
         alert('Failed to save changes');
       }
