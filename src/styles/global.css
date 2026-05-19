@@ -22,11 +22,15 @@
 /* Ensure website layout is not affected by StudioCMS resets */
 main {
   display: block !important;
+  height: auto !important;
+  width: 100% !important;
+  overflow: visible !important;
 }
 
 body {
   color: var(--color-text) !important;
   background-color: transparent !important;
+  display: block !important;
 }
 
 @theme {
@@ -107,16 +111,31 @@ body {
 
 .swiper-button-prev,
 .swiper-button-next {
-  background: rgba(31, 31, 31, 0.6);
+  background: rgba(31, 31, 31, 0.8);
+  border: 1px solid rgba(200, 169, 119, 0.3);
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background: #C8A977;
+  border-color: #C8A977;
 }
 
 .swiper-button-prev::after,
 .swiper-button-next::after {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  color: #FAF8F5;
+  transition: color 0.3s ease;
+}
+
+.swiper-button-prev:hover::after,
+.swiper-button-next:hover::after {
+  color: #1F1F1F;
 }
 
 html {
