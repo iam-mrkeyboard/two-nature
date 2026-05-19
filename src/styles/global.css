@@ -1,5 +1,34 @@
 @import "tailwindcss";
 
+/* Neutralize StudioCMS CSS variable leakage */
+:root {
+  --text-normal: inherit;
+  --background-base: transparent;
+  --primary-base: inherit;
+  --border: inherit;
+  --shadow: transparent;
+  --default-base: transparent;
+  --default-hover: transparent;
+  --default-active: transparent;
+  --background-step-1: transparent;
+  --background-step-2: transparent;
+  --background-step-3: transparent;
+  --text-muted: inherit;
+  --text-dimmed: inherit;
+  --text-inverted: inherit;
+  --color-scheme: inherit;
+}
+
+/* Ensure website layout is not affected by StudioCMS resets */
+main {
+  display: block !important;
+}
+
+body {
+  color: var(--color-text) !important;
+  background-color: transparent !important;
+}
+
 @theme {
   --color-gold: #C8A977;
   --color-gold-light: #EADECA;
