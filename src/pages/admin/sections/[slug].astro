@@ -59,6 +59,14 @@ const sectionConfig: Record<string, { fields: string[]; title: string }> = {
     title: 'Footer Section',
     fields: ['logoUrl', 'newsletterText', 'newsletterSubtext', 'phone', 'address', 'email', 'socialLinks', 'navItems', 'legalLinks'],
   },
+  'section-blog-carousel': {
+    title: 'Blog Carousel',
+    fields: ['subtitle', 'title', 'posts'],
+  },
+  'section-navigation': {
+    title: 'Navigation',
+    fields: ['logoUrl', 'navItems'],
+  },
 };
 
 const config = sectionConfig[slug] || { title: 'Section', fields: [] };

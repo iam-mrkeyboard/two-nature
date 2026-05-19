@@ -2,14 +2,8 @@
 import ScrollAnimation from './ScrollAnimation.astro';
 import ImageCarousel from './ImageCarousel.astro';
 import { getSectionData } from '../lib/cms';
-
-interface ExperiencesData {
-  subtitle: string;
-  title: string;
-  description: string;
-  imageUrls: string[];
-  features: string[];
-}
+import { ExperiencesSchema } from '../lib/schemas';
+import type { ExperiencesData } from '../types/sections';
 
 const fallback: ExperiencesData = {
   subtitle: 'Experiences',
@@ -19,7 +13,7 @@ const fallback: ExperiencesData = {
   features: ['Hot Air Balloon Safaris', 'Guided Game Drives', 'Cultural Village Visits', 'Bush Dining Experiences'],
 };
 
-const data = await getSectionData<ExperiencesData>('section-experiences', fallback);
+const data = await getSectionData('section-experiences', fallback, ExperiencesSchema);
 ---
 
 <ScrollAnimation />

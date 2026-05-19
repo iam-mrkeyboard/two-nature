@@ -1,24 +1,53 @@
-import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { createClient } from '@libsql/client';
+import type { ZodType } from 'zod';
 
-export async function getSectionData<T>(slug: string, fallback: T): Promise<T> {
+const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+
+export async function getSectionData<T>(
+  slug: string,
+  fallback: T,
+  schema?: ZodType<T>
+): Promise<T> {
   try {
-    const page = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
-    if (page?.defaultContent?.content) {
-      return JSON.parse(page.defaultContent.content) as T;
+    const result = await db.execute({
+      sql: `SELECT c.content FROM StudioCMSPageData p
+            JOIN StudioCMSPageContent c ON p.id = c.contentId
+            WHERE p.slug = ? AND c.contentLang = 'en'`,
+      args: [slug],
+    });
+
+    const row = result.rows[0];
+    if (!row || !row.content) return fallback;
+
+    const parsed = JSON.parse(row.content as string);
+
+    if (schema) {
+      const validated = schema.safeParse(parsed);
+      if (validated.success) return validated.data;
+      console.warn(`Schema validation failed for "${slug}":`, validated.error);
+      return fallback;
     }
+
+    return parsed as T;
   } catch (err) {
     console.warn(`Failed to fetch section "${slug}", using fallback:`, err);
+    return fallback;
   }
-  return fallback;
 }
 
 export async function getAllSections() {
   try {
-    const pages = await runSDK(SDKCoreJs.GET.pages());
+    const result = await db.execute({
+      sql: `SELECT p.slug, c.content FROM StudioCMSPageData p
+            JOIN StudioCMSPageContent c ON p.id = c.contentId
+            WHERE p.slug LIKE 'section-%' AND c.contentLang = 'en'`,
+      args: [],
+    });
+
     const sections: Record<string, unknown> = {};
-    for (const page of pages) {
-      if (page.slug?.startsWith('section-') && page.defaultContent?.content) {
-        sections[page.slug] = JSON.parse(page.defaultContent.content);
+    for (const row of result.rows) {
+      if (row.slug && row.content) {
+        sections[row.slug as string] = JSON.parse(row.content as string);
       }
     }
     return sections;

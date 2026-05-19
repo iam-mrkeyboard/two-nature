@@ -1,13 +1,8 @@
 ---
 import StarRating from './StarRating.astro';
 import { getSectionData } from '../lib/cms';
-
-interface HeroData {
-  subtitle: string;
-  title: string;
-  backgroundImage: string;
-  showStars: boolean;
-}
+import { HeroSchema } from '../lib/schemas';
+import type { HeroData } from '../types/sections';
 
 const fallback: HeroData = {
   subtitle: 'One People. One Planet. One Nature.',
@@ -16,7 +11,7 @@ const fallback: HeroData = {
   showStars: true,
 };
 
-const data = await getSectionData<HeroData>('section-hero', fallback);
+const data = await getSectionData('section-hero', fallback, HeroSchema);
 ---
 
 <section class="relative h-screen min-h-[600px] flex flex-col justify-center items-center">

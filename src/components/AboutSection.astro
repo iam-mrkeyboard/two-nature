@@ -3,15 +3,8 @@ import StarRating from './StarRating.astro';
 import GoldButton from './GoldButton.astro';
 import ScrollAnimation from './ScrollAnimation.astro';
 import { getSectionData } from '../lib/cms';
-
-interface AboutData {
-  subtitle: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  ctaText: string;
-  ctaLink: string;
-}
+import { AboutSchema } from '../lib/schemas';
+import type { AboutData } from '../types/sections';
 
 const fallback: AboutData = {
   subtitle: 'Two Nature Hotels',
@@ -22,7 +15,7 @@ const fallback: AboutData = {
   ctaLink: '/about-us/',
 };
 
-const data = await getSectionData<AboutData>('section-about', fallback);
+const data = await getSectionData('section-about', fallback, AboutSchema);
 ---
 
 <ScrollAnimation />

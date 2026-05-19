@@ -1,12 +1,8 @@
 ---
 import ScrollAnimation from './ScrollAnimation.astro';
 import { getSectionData } from '../lib/cms';
-
-interface WildernessData {
-  title: string;
-  description: string;
-  imageUrl: string;
-}
+import { WildernessSchema } from '../lib/schemas';
+import type { WildernessData } from '../types/sections';
 
 const fallback: WildernessData = {
   title: 'Where Comfort and Luxury Meet Wilderness',
@@ -14,7 +10,7 @@ const fallback: WildernessData = {
   imageUrl: '/images/experiences/safari-drive.webp',
 };
 
-const data = await getSectionData<WildernessData>('section-wilderness', fallback);
+const data = await getSectionData('section-wilderness', fallback, WildernessSchema);
 ---
 
 <ScrollAnimation />

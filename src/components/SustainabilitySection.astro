@@ -1,15 +1,8 @@
 ---
 import ScrollAnimation from './ScrollAnimation.astro';
 import { getSectionData } from '../lib/cms';
-
-interface SustainabilityData {
-  subtitle: string;
-  title: string;
-  description: string;
-  motto: string;
-  quote: string;
-  bgImage: string;
-}
+import { SustainabilitySchema } from '../lib/schemas';
+import type { SustainabilityData } from '../types/sections';
 
 const fallback: SustainabilityData = {
   subtitle: 'Sustainability',
@@ -20,7 +13,7 @@ const fallback: SustainabilityData = {
   bgImage: '/images/hero/banner.webp',
 };
 
-const data = await getSectionData<SustainabilityData>('section-sustainability', fallback);
+const data = await getSectionData('section-sustainability', fallback, SustainabilitySchema);
 ---
 
 <ScrollAnimation />

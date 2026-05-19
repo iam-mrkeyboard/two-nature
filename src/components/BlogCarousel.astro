@@ -1,64 +1,73 @@
 ---
 import ScrollAnimation from './ScrollAnimation.astro';
+import { getSectionData } from '../lib/cms';
+import { BlogCarouselSchema } from '../lib/schemas';
+import type { BlogCarouselData } from '../types/sections';
 
-const blogPosts = [
-  {
-    title: "Nature's Masterpieces: The Hidden Purpose Behind Animal Patterns in the Serengeti",
-    category: 'Animals',
-    date: 'Sep 08',
-    image: '/images/blog/animal-patterns.webp',
-    href: '/blog/natures-masterpieces/',
-  },
-  {
-    title: 'Why Serengeti Holidays with Families and Friends Are Best for the Festive Season',
-    category: 'Highlights',
-    date: 'Nov 20',
-    image: '/images/blog/festive.webp',
-    href: '/blog/serengeti-holidays-families/',
-  },
-  {
-    title: 'Wildlife Conservation: How Two Nature Stands Tall for Wildlife and Communities',
-    category: 'Conservation',
-    date: 'Dec 03',
-    image: '/images/blog/conservation.webp',
-    href: '/blog/wildlife-conservation/',
-  },
-  {
-    title: 'Giraffes of the Serengeti: What Makes Them So Special',
-    category: 'Animals',
-    date: 'Jan 15',
-    image: '/images/blog/giraffes.webp',
-    href: '/blog/giraffes-of-the-serengeti/',
-  },
-  {
-    title: 'Dung Architects: The Unsung Engineers of the Serengeti (And Why They Matter to Your Safari!)',
-    category: 'Animals',
-    date: 'Jan 10',
-    image: '/images/blog/dung-beetles.webp',
-    href: '/blog/dung-architects/',
-  },
-  {
-    title: "Valentine's Day Getaway 2026",
-    category: 'Highlights',
-    date: 'Dec 10',
-    image: '/images/blog/valentines.webp',
-    href: '/blog/valentines-day-getaway/',
-  },
-  {
-    title: '10 Best Animals to See in the Serengeti',
-    category: 'Animals',
-    date: 'Dec 05',
-    image: '/images/blog/best-animals.webp',
-    href: '/blog/10-best-animals/',
-  },
-  {
-    title: 'Spring Break in the Serengeti',
-    category: 'Highlights',
-    date: 'Nov 28',
-    image: '/images/blog/spring-break.webp',
-    href: '/blog/spring-break-serengeti/',
-  },
-];
+const fallback: BlogCarouselData = {
+  subtitle: 'News, Articles, & More',
+  title: 'Blog',
+  posts: [
+    {
+      title: "Nature's Masterpieces: The Hidden Purpose Behind Animal Patterns in the Serengeti",
+      category: 'Animals',
+      date: 'Sep 08',
+      image: '/images/blog/animal-patterns.webp',
+      href: '/blog/natures-masterpieces/',
+    },
+    {
+      title: 'Why Serengeti Holidays with Families and Friends Are Best for the Festive Season',
+      category: 'Highlights',
+      date: 'Nov 20',
+      image: '/images/blog/festive.webp',
+      href: '/blog/serengeti-holidays-families/',
+    },
+    {
+      title: 'Wildlife Conservation: How Two Nature Stands Tall for Wildlife and Communities',
+      category: 'Conservation',
+      date: 'Dec 03',
+      image: '/images/blog/conservation.webp',
+      href: '/blog/wildlife-conservation/',
+    },
+    {
+      title: 'Giraffes of the Serengeti: What Makes Them So Special',
+      category: 'Animals',
+      date: 'Jan 15',
+      image: '/images/blog/giraffes.webp',
+      href: '/blog/giraffes-of-the-serengeti/',
+    },
+    {
+      title: 'Dung Architects: The Unsung Engineers of the Serengeti (And Why They Matter to Your Safari!)',
+      category: 'Animals',
+      date: 'Jan 10',
+      image: '/images/blog/dung-beetles.webp',
+      href: '/blog/dung-architects/',
+    },
+    {
+      title: "Valentine's Day Getaway 2026",
+      category: 'Highlights',
+      date: 'Dec 10',
+      image: '/images/blog/valentines.webp',
+      href: '/blog/valentines-day-getaway/',
+    },
+    {
+      title: '10 Best Animals to See in the Serengeti',
+      category: 'Animals',
+      date: 'Dec 05',
+      image: '/images/blog/best-animals.webp',
+      href: '/blog/10-best-animals/',
+    },
+    {
+      title: 'Spring Break in the Serengeti',
+      category: 'Highlights',
+      date: 'Nov 28',
+      image: '/images/blog/spring-break.webp',
+      href: '/blog/spring-break-serengeti/',
+    },
+  ],
+};
+
+const data = await getSectionData('section-blog-carousel', fallback, BlogCarouselSchema);
 ---
 
 <ScrollAnimation />
@@ -67,14 +76,14 @@ const blogPosts = [
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-12 fade-in">
       <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold mb-3">
-        News, Articles, & More
+        {data.subtitle}
       </span>
-      <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark">Blog</h2>
+      <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark">{data.title}</h2>
     </div>
 
     <div class="swiper blog-carousel fade-in relative">
       <div class="swiper-wrapper">
-        {blogPosts.map((post) => (
+        {data.posts.map((post) => (
           <div class="swiper-slide">
             <a href={post.href} class="block relative group h-[520px] w-full overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <!-- Image (with scale fix for giraffes letterboxing) -->

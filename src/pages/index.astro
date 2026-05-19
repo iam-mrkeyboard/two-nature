@@ -15,16 +15,8 @@ import TripPlanningCTA from '../components/TripPlanningCTA.astro';
 import Footer from '../components/Footer.astro';
 import MobileStickyBar from '../components/MobileStickyBar.astro';
 import { getSectionData } from '../lib/cms';
-
-interface PropertyData {
-  location: string;
-  title: string;
-  description: string;
-  imageUrls: string[];
-  ctaText: string;
-  ctaLink: string;
-  reversed?: boolean;
-}
+import { PropertySchema } from '../lib/schemas';
+import type { PropertyData } from '../types/sections';
 
 const fallbackMara: PropertyData = {
   location: 'Serengeti National Park, Tanzania',
@@ -45,8 +37,8 @@ const fallbackNya: PropertyData = {
   reversed: true,
 };
 
-const maraData = await getSectionData<PropertyData>('section-property-mara-river', fallbackMara);
-const nyaData = await getSectionData<PropertyData>('section-property-nyaruswiga', fallbackNya);
+const maraData = await getSectionData('section-property-mara-river', fallbackMara, PropertySchema);
+const nyaData = await getSectionData('section-property-nyaruswiga', fallbackNya, PropertySchema);
 ---
 
 <Layout>

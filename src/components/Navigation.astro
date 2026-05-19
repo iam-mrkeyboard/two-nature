@@ -1,20 +1,28 @@
 ---
-const logoUrl = '/images/logos/gold.svg';
-const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about-us/' },
-  { label: 'One Nature Nyaruswiga', href: '/nyaruswiga/' },
-  { label: 'One Nature Mara River', href: '/mara-river/' },
-  { label: 'Media', href: '/media/' },
-  { label: 'Blog', href: '/blog/' },
-  { label: 'Contact Us', href: '/contact-us/' },
-];
+import { getSectionData } from '../lib/cms';
+import { NavigationSchema } from '../lib/schemas';
+import type { NavigationData } from '../types/sections';
+
+const fallback: NavigationData = {
+  logoUrl: '/images/logos/gold.svg',
+  navItems: [
+    { label: 'Home', href: '/' },
+    { label: 'About Us', href: '/about-us/' },
+    { label: 'One Nature Nyaruswiga', href: '/nyaruswiga/' },
+    { label: 'One Nature Mara River', href: '/mara-river/' },
+    { label: 'Media', href: '/media/' },
+    { label: 'Blog', href: '/blog/' },
+    { label: 'Contact Us', href: '/contact-us/' },
+  ],
+};
+
+const data = await getSectionData('section-navigation', fallback, NavigationSchema);
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="mainHeader">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" class="block">
-      <img src={logoUrl} alt="Two Nature Hotels" class="h-10 md:h-12" />
+      <img src={data.logoUrl} alt="Two Nature Hotels" class="h-10 md:h-12" />
     </a>
 
     <div class="hidden md:flex items-center gap-8">
@@ -64,7 +72,7 @@ const navItems = [
     </button>
   </div>
   <div class="flex flex-col items-center gap-6 mt-8">
-    {navItems.map((item) => (
+    {data.navItems.map((item) => (
       <a
         href={item.href}
         class="font-heading uppercase tracking-[0.15em] text-lg text-gold-cream hover:text-gold transition-colors"
