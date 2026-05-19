@@ -10,11 +10,9 @@ if (!slug) {
 
 const page = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
-let content = {};
-let title = 'Section';
+let content: Record<string, unknown> = {};
 
 if (page) {
-  title = page.title ?? 'Section';
   if (page.defaultContent?.content) {
     try {
       content = JSON.parse(page.defaultContent.content);
@@ -74,7 +72,7 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
 
   <form id="sectionForm" class="max-w-3xl space-y-6" data-slug={slug}>
     {config.fields.map((field) => {
-      const value = content[field];
+      const value = content[field] as string | undefined;
       const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
 
       if (field === 'description' || field === 'quote') {
@@ -91,6 +89,7 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
       }
 
       if (field === 'imageUrls' || field === 'features' || field === 'phone' || field === 'socialLinks' || field === 'navItems' || field === 'legalLinks') {
+        const arrValue = content[field] as unknown[] | undefined;
         return (
           <div>
             <label class="block font-heading uppercase tracking-wider text-gold text-xs mb-2">{label} (JSON array)</label>
@@ -98,7 +97,7 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
               name={field}
               rows={4}
               class="w-full font-mono text-sm"
-            >{JSON.stringify(value || [], null, 2)}</textarea>
+            >{JSON.stringify(arrValue || [], null, 2)}</textarea>
           </div>
         );
       }
@@ -106,7 +105,7 @@ const config = sectionConfig[slug] || { title: 'Section', fields: [] };
       if (field === 'showStars') {
         return (
           <div class="flex items-center gap-3">
-            <input type="checkbox" name={field} checked={value !== false} class="w-4 h-4 accent-gold" />
+            <input type="checkbox" name={field} checked={(content[field] as boolean) !== false} class="w-4 h-4 accent-gold" />
             <label class="font-heading uppercase tracking-wider text-gold-cream/70 text-sm">{label}</label>
           </div>
         );

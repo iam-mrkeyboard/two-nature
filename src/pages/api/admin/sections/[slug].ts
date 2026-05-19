@@ -1,6 +1,7 @@
+import type { APIRoute } from 'astro';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-export async function POST({ request, params }) {
+export const POST: APIRoute = async ({ request, params }) => {
   try {
     const slug = params.slug;
     if (!slug) {

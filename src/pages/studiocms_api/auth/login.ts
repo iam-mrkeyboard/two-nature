@@ -1,7 +1,8 @@
+import type { APIRoute } from 'astro';
 import { verify } from '@node-rs/argon2';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
-export async function POST({ request, session }) {
+export const POST: APIRoute = async ({ request, session }) => {
   try {
     const { username, password } = await request.json();
 
@@ -29,8 +30,15 @@ export async function POST({ request, session }) {
       });
     }
 
-    await session.set('userId', user.id);
-    await session.set('username', user.username);
+    if (!session) {
+      return new Response(JSON.stringify({ error: 'Session unavailable' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    session.set('userId', user.id);
+    session.set('username', user.username);
 
     return new Response(JSON.stringify({ success: true, redirect: '/admin' }), {
       status: 200,

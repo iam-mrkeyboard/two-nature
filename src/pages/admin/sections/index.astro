@@ -27,7 +27,7 @@ const sectionList = [
   <div class="space-y-4">
     {sectionList.map((section) => {
       const sectionData = sectionPages.find((p: { slug: string }) => p.slug === section.slug);
-      const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt as string).toLocaleDateString() : 'Never';
+      const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt).toLocaleDateString() : 'Never';
       return (
         <div class="card flex items-center justify-between">
           <div class="flex-1">

@@ -27,7 +27,7 @@ const sectionCards = [
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
     {sectionCards.map((section) => {
       const sectionData = sectionPages.find((p: { slug: string }) => p.slug === section.slug);
-      const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt as string).toLocaleDateString() : 'Never';
+      const lastUpdated = sectionData?.updatedAt ? new Date(sectionData.updatedAt).toLocaleDateString() : 'Never';
       return (
         <a href={`/admin/sections/${section.slug}`} class="card block group">
           <div class="flex items-start justify-between mb-4">

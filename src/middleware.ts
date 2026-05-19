@@ -21,6 +21,10 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     return next();
   }
 
+  if (!context.session) {
+    return context.redirect('/admin/login');
+  }
+
   const userId = await context.session.get('userId');
 
   if (!userId) {
