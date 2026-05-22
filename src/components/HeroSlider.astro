@@ -14,27 +14,46 @@ const fallback: HeroData = {
 const data = await getSectionData('section-hero', fallback, HeroSchema);
 ---
 
-<section class="relative h-screen min-h-[600px] flex flex-col justify-center items-center">
-  <div class="absolute inset-0">
+<section class="relative h-screen min-h-[600px] flex flex-col justify-center items-center overflow-hidden">
+  <div class="absolute inset-0" id="hero-parallax">
     <img
       src={data.backgroundImage}
       alt={data.title}
       class="w-full h-full object-cover"
     />
-    <div class="absolute inset-0 bg-gradient-to-b from-dark/40 via-dark/20 to-dark/60"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-dark/50 via-dark/10 to-dark/60"></div>
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse at center, transparent 40%, rgba(26,23,20,0.5) 100%)"></div>
   </div>
 
-  <div class="relative z-10 text-center px-6 max-w-3xl">
+  <div class="relative z-10 text-center px-6 max-w-3xl stagger-children animate-in">
     {data.showStars && <StarRating color="#C8A977" />}
-    <p class="font-heading uppercase tracking-[0.25em] text-gold-cream/90 text-sm md:text-base mt-6 mb-4">
+    <p class="font-heading uppercase tracking-[0.3em] text-gold-cream/90 text-sm md:text-base mt-6 mb-4">
       {data.subtitle}
     </p>
-    <h1 class="font-display text-5xl md:text-7xl lg:text-8xl text-gold-cream font-semibold leading-tight">
+    <h1 class="font-display text-[clamp(3rem,8vw,7rem)] text-gold-cream font-normal leading-[1.1] tracking-tight">
       {data.title}
     </h1>
+  </div>
+
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 scroll-indicator">
+    <svg class="w-6 h-6 text-gold-cream/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
   </div>
 
   <div class="absolute bottom-0 left-0 right-0 z-20">
     <slot name="booking" />
   </div>
 </section>
+
+<script is:inline>
+  const parallax = document.getElementById('hero-parallax');
+  if (parallax) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const maxScroll = window.innerHeight;
+      const offset = Math.min(scrollY * 0.3, maxScroll * 0.3);
+      parallax.style.transform = `translateY(${offset}px)`;
+    }, { passive: true });
+  }
+</script>

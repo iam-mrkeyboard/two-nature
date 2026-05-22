@@ -20,18 +20,19 @@ const data = await getSectionData('section-about', fallback, AboutSchema);
 
 <ScrollAnimation />
 
-<section class="section-padding bg-gold-beige">
+<section class="section-padding bg-ivory">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-      <div class="fade-in">
+      <div class="fade-in stagger-children">
         <StarRating color="#C8A977" />
-        <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold mt-6 mb-3">
+        <div class="h-px w-24 bg-gold/40 mt-6 mb-3"></div>
+        <span class="block font-heading text-sm tracking-[0.25em] uppercase text-gold-text">
           {data.subtitle}
         </span>
-        <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark leading-tight mb-6">
+        <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] text-dark font-normal leading-[1.2] tracking-tight mb-6">
           {data.title}
         </h2>
-        <p class="text-text leading-relaxed mb-8">
+        <p class="text-text leading-[1.65] mb-8">
           {data.description}
         </p>
         <GoldButton href={data.ctaLink} text={data.ctaText} />
@@ -40,7 +41,7 @@ const data = await getSectionData('section-about', fallback, AboutSchema);
         <img
           src={data.imageUrl}
           alt={data.title}
-          class="w-full h-auto rounded shadow-xl"
+          class="w-full h-auto rounded-2xl shadow-lg img-lift"
           loading="lazy"
         />
       </div>

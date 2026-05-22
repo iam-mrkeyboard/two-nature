@@ -72,21 +72,21 @@ const data = await getSectionData('section-blog-carousel', fallback, BlogCarouse
 
 <ScrollAnimation />
 
-<section class="section-padding bg-gold-beige">
+<section class="section-padding bg-ivory">
   <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-12 fade-in">
-      <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold mb-3">
+    <div class="text-center mb-12 fade-in stagger-children">
+      <div class="h-px w-24 bg-gold/40 mx-auto mb-6"></div>
+      <span class="block font-heading text-sm tracking-[0.25em] uppercase text-gold-text mb-3">
         {data.subtitle}
       </span>
-      <h2 class="font-display text-4xl md:text-5xl font-semibold text-dark">{data.title}</h2>
+      <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] text-dark font-normal tracking-tight">{data.title}</h2>
     </div>
 
     <div class="swiper blog-carousel fade-in relative">
       <div class="swiper-wrapper">
         {data.posts.map((post) => (
           <div class="swiper-slide">
-            <a href={post.href} class="block relative group h-[520px] w-full overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-              <!-- Image (with scale fix for giraffes letterboxing) -->
+            <a href={post.href} class="block relative group h-[520px] w-full overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
               <img 
                 src={post.image} 
                 alt={post.title} 
@@ -94,18 +94,16 @@ const data = await getSectionData('section-blog-carousel', fallback, BlogCarouse
                 loading="lazy" 
               />
               
-              <!-- Date Overlay -->
-              <div class="absolute top-6 left-6 border border-white/30 text-white text-center px-3 py-1.5 min-w-[55px] bg-black/10 backdrop-blur-[2px]">
-                <span class="block font-heading text-[10px] uppercase tracking-widest leading-none text-white/95">{post.date.split(' ')[0]}</span>
-                <span class="block font-display text-2xl font-normal leading-none mt-1">{post.date.split(' ')[1]}</span>
+              <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-sm text-dark text-center px-4 py-2 min-w-[60px] rounded-full shadow-sm">
+                <span class="block font-heading text-[10px] uppercase tracking-widest leading-none">{post.date.split(' ')[0]}</span>
+                <span class="block font-display text-2xl font-normal leading-none mt-0.5">{post.date.split(' ')[1]}</span>
               </div>
 
-              <!-- Content Box (Pure White, Floating) -->
-              <div class="absolute bottom-6 left-6 right-6 bg-white p-6 pb-8 shadow-sm">
-                <span class="block font-heading text-[11px] tracking-[0.2em] uppercase text-gold mb-3">
+              <div class="absolute bottom-6 left-6 right-6 bg-white p-6 pb-8 shadow-lg transition-shadow duration-300 group-hover:shadow-xl">
+                <span class="block font-heading text-[11px] tracking-[0.2em] uppercase text-gold-text mb-3">
                   {post.category}
                 </span>
-                <h3 class="font-display text-lg font-semibold text-dark leading-snug line-clamp-3">
+                <h3 class="font-display text-lg font-normal text-dark leading-snug line-clamp-2">
                   {post.title}
                 </h3>
               </div>
@@ -113,7 +111,6 @@ const data = await getSectionData('section-blog-carousel', fallback, BlogCarouse
           </div>
         ))}
       </div>
-      <!-- Swiper Navigation Arrows -->
       <div class="swiper-button-prev"></div>
       <div class="swiper-button-next"></div>
     </div>
