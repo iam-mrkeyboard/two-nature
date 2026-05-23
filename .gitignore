@@ -20,6 +20,9 @@ pnpm-debug.log*
 # database
 *.db
 
+# Cloudflare
+.wrangler/
+
 # macOS-specific files
 .DS_Store
 

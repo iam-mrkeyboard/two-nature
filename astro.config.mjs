@@ -3,6 +3,10 @@ import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import studioCMS from 'studiocms';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,8 +20,10 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
-    ssr: {
-      external: ['@node-rs/argon2'],
+    resolve: {
+      alias: {
+        '@node-rs/argon2': path.resolve(__dirname, 'src/stubs/argon2.ts'),
+      },
     },
   },
 });
