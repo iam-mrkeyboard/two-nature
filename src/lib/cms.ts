@@ -1,14 +1,20 @@
-import { createClient } from '@libsql/client/web';
+import { createClient, type Client } from '@libsql/client/web';
 import type { ZodType } from 'zod';
 
-const url = process.env.CMS_LIBSQL_URL || 'file:./twonature.db';
-const authToken = process.env.TURSO_DB_AUTH_TOKEN;
+let db: Client | null = null;
 
-const db = createClient(
-  url.startsWith('libsql://')
-    ? { url, authToken }
-    : { url }
-);
+function getDb(): Client {
+  if (!db) {
+    const url = process.env.CMS_LIBSQL_URL || 'file:./twonature.db';
+    const authToken = process.env.TURSO_DB_AUTH_TOKEN;
+    db = createClient(
+      url.startsWith('libsql://')
+        ? { url, authToken }
+        : { url }
+    );
+  }
+  return db;
+}
 
 export async function getSectionData<T>(
   slug: string,
@@ -16,7 +22,7 @@ export async function getSectionData<T>(
   schema?: ZodType<T>
 ): Promise<T> {
   try {
-    const result = await db.execute({
+    const result = await getDb().execute({
       sql: `SELECT c.content FROM StudioCMSPageData p
             JOIN StudioCMSPageContent c ON p.id = c.contentId
             WHERE p.slug = ? AND c.contentLang = 'en'`,
@@ -44,7 +50,7 @@ export async function getSectionData<T>(
 
 export async function getAllSections() {
   try {
-    const result = await db.execute({
+    const result = await getDb().execute({
       sql: `SELECT p.slug, c.content FROM StudioCMSPageData p
             JOIN StudioCMSPageContent c ON p.id = c.contentId
             WHERE p.slug LIKE 'section-%' AND c.contentLang = 'en'`,

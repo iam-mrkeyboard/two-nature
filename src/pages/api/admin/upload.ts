@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { uploadImage } from '../../../lib/storage';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('image') as File;
@@ -14,7 +14,8 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const url = await uploadImage(file, section);
+    const env = (locals as any).runtime.env;
+    const url = await uploadImage(file, section, env);
 
     return new Response(JSON.stringify({ success: true, url }), {
       status: 200,
