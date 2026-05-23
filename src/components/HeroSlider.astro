@@ -25,7 +25,7 @@ const data = await getSectionData('section-hero', fallback, HeroSchema);
     <div class="absolute inset-0" style="background: radial-gradient(ellipse at center, transparent 40%, rgba(26,23,20,0.5) 100%)"></div>
   </div>
 
-  <div class="relative z-10 text-center px-6 max-w-3xl stagger-children animate-in">
+  <div class="relative z-10 text-center px-6 max-w-3xl fade-in">
     {data.showStars && <StarRating color="#C8A977" />}
     <p class="font-heading uppercase tracking-[0.3em] text-gold-cream/90 text-sm md:text-base mt-6 mb-4">
       {data.subtitle}
@@ -33,16 +33,6 @@ const data = await getSectionData('section-hero', fallback, HeroSchema);
     <h1 class="font-display text-[clamp(3rem,8vw,7rem)] text-gold-cream font-normal leading-[1.1] tracking-tight">
       {data.title}
     </h1>
-  </div>
-
-  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 scroll-indicator">
-    <svg class="w-6 h-6 text-gold-cream/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-    </svg>
-  </div>
-
-  <div class="absolute bottom-0 left-0 right-0 z-20">
-    <slot name="booking" />
   </div>
 </section>
 

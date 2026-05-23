@@ -21,9 +21,8 @@ const props = Astro.props as PropertyData;
 <section class="section-padding bg-ivory">
   <div class="max-w-7xl mx-auto px-6">
     <div class={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center ${props.reversed ? 'lg:flex-row-reverse' : ''}`}>
-      <div class={`fade-in ${props.reversed ? 'lg:order-2' : ''} stagger-children`}>
-        <div class="h-px w-24 bg-gold/40 mb-6"></div>
-        <span class="block font-heading text-sm tracking-[0.2em] uppercase text-gold-text mb-3">
+      <div class={`fade-in ${props.reversed ? 'lg:order-2' : ''}`}>
+        <span class="block font-heading text-sm tracking-[0.2em] uppercase text-text mb-3">
           {props.location}
         </span>
         <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] text-dark font-normal leading-[1.2] tracking-tight mb-6">
@@ -35,9 +34,7 @@ const props = Astro.props as PropertyData;
         <GoldButton href={props.ctaLink} text={props.ctaText} />
       </div>
       <div class={`fade-in ${props.reversed ? 'lg:order-1' : ''}`}>
-        <div class="img-lift">
-          <ImageCarousel images={props.imageUrls} class="rounded-2xl shadow-lg" />
-        </div>
+        <ImageCarousel images={props.imageUrls} class="rounded-2xl shadow-lg" />
       </div>
     </div>
   </div>

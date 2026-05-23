@@ -28,12 +28,11 @@ const featureIcons = [
 <section class="section-padding bg-ivory">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-      <div class="fade-in stagger-children">
-        <div class="h-px w-24 bg-gold/40 mb-6"></div>
+      <div class="fade-in">
         <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] text-dark font-normal leading-[1.2] tracking-tight mb-4">
           {data.title}
         </h2>
-        <p class="font-heading text-sm tracking-[0.2em] uppercase text-gold-text mb-8">
+        <p class="font-heading text-sm tracking-[0.2em] uppercase text-text mb-8">
           {data.subtitle}
         </p>
         <ul class="space-y-4 mb-8">
@@ -54,7 +53,7 @@ const featureIcons = [
         <img
           src={data.imageUrl}
           alt={data.title}
-          class="w-full h-auto rounded-2xl shadow-lg img-lift"
+          class="w-full h-auto rounded-2xl shadow-lg"
           loading="lazy"
         />
       </div>

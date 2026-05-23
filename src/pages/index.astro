@@ -14,7 +14,6 @@ import BlogCarousel from '../components/BlogCarousel.astro';
 import TripPlanningCTA from '../components/TripPlanningCTA.astro';
 import Footer from '../components/Footer.astro';
 import MobileStickyBar from '../components/MobileStickyBar.astro';
-import SectionDivider from '../components/SectionDivider.astro';
 import { getSectionData } from '../lib/cms';
 import { PropertySchema } from '../lib/schemas';
 import type { PropertyData } from '../types/sections';
@@ -45,39 +44,18 @@ const nyaData = await getSectionData('section-property-nyaruswiga', fallbackNya,
 <Layout>
   <Navigation />
 
-  <HeroSlider>
-    <BookingBar slot="booking" />
-  </HeroSlider>
+  <HeroSlider />
+
+  <BookingBar />
 
   <main>
     <AboutSection />
-
-    <SectionDivider />
-
     <PropertyShowcase {...maraData} />
-
-    <SectionDivider />
-
     <PropertyShowcase {...nyaData} />
-
-    <SectionDivider />
-
     <WildernessSection />
-
-    <SectionDivider />
-
     <ExperiencesSection />
-
-    <SectionDivider />
-
     <SustainabilitySection />
-
-    <SectionDivider />
-
     <BlogCarousel />
-
-    <SectionDivider />
-
     <TripPlanningCTA />
   </main>
 

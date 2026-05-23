@@ -18,8 +18,7 @@ const data = await getSectionData('section-wilderness', fallback, WildernessSche
 <section class="section-padding bg-ivory">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-      <div class="fade-in stagger-children">
-        <div class="h-px w-24 bg-gold/40 mb-6"></div>
+      <div class="fade-in">
         <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] text-dark font-normal leading-[1.2] tracking-tight mb-6">
           {data.title}
         </h2>
@@ -31,7 +30,7 @@ const data = await getSectionData('section-wilderness', fallback, WildernessSche
         <img
           src={data.imageUrl}
           alt={data.title}
-          class="w-full h-auto rounded-2xl shadow-lg img-lift"
+          class="w-full h-auto rounded-2xl shadow-lg"
           loading="lazy"
         />
       </div>
