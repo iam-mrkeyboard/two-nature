@@ -5,32 +5,35 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 const formatDate = (d: Date) => d.toISOString().split('T')[0];
 ---
 
-<div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-auto max-w-4xl mx-auto px-4">
-  <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-2xl shadow-dark/20 px-8 py-4">
-    <form class="flex flex-col sm:flex-row gap-4 items-center">
+<div class="bg-dark border-t border-gold/20">
+  <div class="max-w-7xl mx-auto px-6 py-5">
+    <form class="flex flex-col sm:flex-row items-end sm:items-center gap-4">
       <div class="flex-1 w-full">
-        <select class="w-full bg-transparent border-b border-gold/30 text-gold-cream/90 font-heading uppercase tracking-wider text-sm py-2 focus:outline-none focus:border-gold transition-colors">
+        <label class="block font-heading text-xs tracking-wider uppercase text-gold-cream/50 mb-1.5">Property</label>
+        <select class="w-full bg-transparent border-b border-gold/20 text-gold-cream/90 font-heading uppercase tracking-wider text-sm py-2 focus:outline-none focus:border-gold transition-colors">
           <option value="nyaruswiga" class="text-dark">One Nature Nyaruswiga</option>
           <option value="mara-river" class="text-dark">One Nature Mara River</option>
         </select>
       </div>
       <div class="flex-1 w-full">
+        <label class="block font-heading text-xs tracking-wider uppercase text-gold-cream/50 mb-1.5">Check In</label>
         <input
           type="date"
           value={formatDate(today)}
-          class="w-full bg-transparent border-b border-gold/30 text-gold-cream/90 font-heading uppercase tracking-wider text-sm py-2 focus:outline-none focus:border-gold transition-colors"
+          class="w-full bg-transparent border-b border-gold/20 text-gold-cream/90 font-heading uppercase tracking-wider text-sm py-2 focus:outline-none focus:border-gold transition-colors"
         />
       </div>
       <div class="flex-1 w-full">
+        <label class="block font-heading text-xs tracking-wider uppercase text-gold-cream/50 mb-1.5">Check Out</label>
         <input
           type="date"
           value={formatDate(tomorrow)}
-          class="w-full bg-transparent border-b border-gold/30 text-gold-cream/90 font-heading uppercase tracking-wider text-sm py-2 focus:outline-none focus:border-gold transition-colors"
+          class="w-full bg-transparent border-b border-gold/20 text-gold-cream/90 font-heading uppercase tracking-wider text-sm py-2 focus:outline-none focus:border-gold transition-colors"
         />
       </div>
       <button
         type="submit"
-        class="bg-gold text-dark font-heading uppercase tracking-wider text-sm px-8 py-2 rounded-full hover:bg-dark hover:text-gold transition-all duration-300 btn-sweep w-full sm:w-auto whitespace-nowrap"
+        class="bg-gold text-dark font-heading uppercase tracking-wider text-sm px-8 py-2.5 hover:bg-gold-cream transition-colors duration-300 w-full sm:w-auto sm:mt-5"
       >
         Book Now
       </button>
