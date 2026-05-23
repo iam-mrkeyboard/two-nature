@@ -1,25 +1,27 @@
 import type { MiddlewareHandler } from 'astro';
 
-const publicPaths = [
+const exactPublicPaths = new Set([
   '/',
-  '/images/',
   '/admin/login',
-  '/api/admin/login',
-  '/api/admin/logout',
-  '/studiocms_api/auth/login',
-  '/studiocms_api/auth/register',
-  '/dashboard',
   '/dashboard/login',
   '/dashboard/signup',
+]);
+
+const prefixPublicPaths = [
+  '/images/',
+  '/api/admin/login',
+  '/api/admin/logout',
+  '/studiocms_api/auth/',
 ];
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
   const url = new URL(context.request.url);
   const path = url.pathname;
 
-  if (publicPaths.some(p => path.startsWith(p))) {
-    return next();
-  }
+  const isPublic = exactPublicPaths.has(path)
+    || prefixPublicPaths.some(p => path.startsWith(p));
+
+  if (isPublic) return next();
 
   if (!context.session) {
     return context.redirect('/admin/login');

@@ -1,12 +1,22 @@
-// Stub for @node-rs/argon2 — native addon not available on Cloudflare Workers.
-// StudioCMS auth is disabled so these are never invoked at runtime.
+import bcrypt from 'bcryptjs';
 
 export async function hash(password: string): Promise<string> {
-  console.warn('argon2 stub: hash() called but auth is disabled');
-  return password;
+  return bcrypt.hash(password, 10);
 }
 
 export async function verify(hash: string, password: string): Promise<boolean> {
-  console.warn('argon2 stub: verify() called but auth is disabled');
+  if (hash.startsWith('$2a$') || hash.startsWith('$2b$') || hash.startsWith('$2y$')) {
+    try {
+      return await bcrypt.compare(password, hash);
+    } catch {
+      return false;
+    }
+  }
+
+  if (hash === password) {
+    return true;
+  }
+
+  console.warn('argon2 stub: unsupported hash format');
   return false;
 }

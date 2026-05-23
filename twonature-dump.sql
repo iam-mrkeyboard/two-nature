@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS "kysely_migration_lock" ("id" varchar(255) not null p
 INSERT INTO kysely_migration_lock VALUES('migration_lock',0);
 CREATE TABLE IF NOT EXISTS "StudioCMSUsersTable" ("id" text primary key, "url" text, "name" text not null, "email" text, "avatar" text, "username" text not null, "password" text, "updatedAt" text not null, "createdAt" text default CURRENT_TIMESTAMP not null, "emailVerified" integer default 0 not null, "notifications" text);
 INSERT INTO StudioCMSUsersTable VALUES('system-admin',NULL,'System Admin','system@twonature.com',NULL,'systemadmin','system','2026-05-16T18:03:24.983Z','2026-05-16T18:03:24.983Z',1,NULL);
-INSERT INTO StudioCMSUsersTable VALUES('user-1778956696810',NULL,'Admin User','admin@twonature.com',NULL,'admin','$argon2id$v=19$m=19456,t=2,p=1$Xq+ZMFRzDngAxJIf9bbqEQ$A7WG0E9riBTawkS2BxiuAJ6Gotql3AvDybSVWwQRq0E','2026-05-16T18:38:16.808Z','2026-05-16T18:38:16.808Z',1,NULL);
+INSERT INTO StudioCMSUsersTable VALUES('user-1778956696810',NULL,'Admin User','admin@twonature.com',NULL,'admin','$2b$10$dF0DBzU18KahY1JpobvnheeyqTH1Lli0wB/0trzc2iTRESC3CYuYO','2026-05-16T18:38:16.808Z','2026-05-16T18:38:16.808Z',1,NULL);
 CREATE TABLE IF NOT EXISTS "StudioCMSOAuthAccounts" ("providerUserId" text not null, "provider" text not null, "userId" text not null references "StudioCMSUsersTable" ("id"));
 CREATE TABLE IF NOT EXISTS "StudioCMSSessionTable" ("id" text primary key, "userId" text not null references "StudioCMSUsersTable" ("id"), "expiresAt" text not null);
 INSERT INTO StudioCMSSessionTable VALUES('d794b9d6-ace5-4f10-8d23-4f5491083769','user-1778956696810','2026-05-17T19:09:58.936Z');
