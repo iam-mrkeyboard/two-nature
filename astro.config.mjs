@@ -1,24 +1,23 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import studioCMS from 'studiocms';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'http://localhost:4321/',
+  site: 'https://twonature.com',
   output: 'server',
-  adapter: node({ mode: 'standalone' }),
-  session: {
-    driver: {
-      entrypoint: 'unstorage/drivers/fs',
-      config: { base: './.sessions' },
-    },
-  },
+  adapter: cloudflare({
+    platformProxy: { enabled: true },
+  }),
   integrations: [
     studioCMS(),
   ],
   vite: {
     plugins: [tailwindcss()],
+    ssr: {
+      external: ['@node-rs/argon2'],
+    },
   },
 });

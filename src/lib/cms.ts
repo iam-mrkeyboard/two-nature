@@ -1,7 +1,14 @@
-import { createClient } from '@libsql/client';
+import { createClient } from '@libsql/client/web';
 import type { ZodType } from 'zod';
 
-const db = createClient({ url: process.env.CMS_LIBSQL_URL || 'file:./twonature.db' });
+const url = process.env.CMS_LIBSQL_URL || 'file:./twonature.db';
+const authToken = process.env.TURSO_DB_AUTH_TOKEN;
+
+const db = createClient(
+  url.startsWith('libsql://')
+    ? { url, authToken }
+    : { url }
+);
 
 export async function getSectionData<T>(
   slug: string,
