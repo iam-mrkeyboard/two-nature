@@ -1,34 +1,40 @@
-interface R2Env {
-  R2_BUCKET: R2Bucket;
-  R2_PUBLIC_URL?: string;
-}
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
-function getPublicUrl(env: R2Env, key: string): string {
-  return env.R2_PUBLIC_URL
-    ? `${env.R2_PUBLIC_URL}/${key}`
-    : `/images/${key}`;
-}
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.resolve(process.cwd(), 'uploads');
 
-export async function uploadImage(file: File, section: string, env: R2Env): Promise<string> {
+export async function uploadImage(file: File, section: string): Promise<string> {
   const ext = file.name.split('.').pop() || 'webp';
   const key = `${section}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const dest = path.join(UPLOADS_DIR, key);
 
-  await env.R2_BUCKET.put(key, file.stream(), {
-    httpMetadata: { contentType: file.type || `image/${ext}` },
-  });
+  await fs.mkdir(path.dirname(dest), { recursive: true });
+  const bytes = await file.arrayBuffer();
+  await fs.writeFile(dest, Buffer.from(bytes));
 
-  return getPublicUrl(env, key);
+  return `/uploads/${key}`;
 }
 
-export async function listImages(env: R2Env, section?: string) {
-  const list = await env.R2_BUCKET.list({
-    prefix: section ? `${section}/` : undefined,
-  });
+export async function listImages(section?: string) {
+  const dir = section ? path.join(UPLOADS_DIR, section) : UPLOADS_DIR;
 
-  return list.objects.map((obj) => ({
-    url: getPublicUrl(env, obj.key),
-    name: obj.key.split('/').pop() || '',
-    section: obj.key.split('/')[0] || '',
-    size: obj.size,
-  }));
+  let files: string[];
+  try {
+    files = await fs.readdir(dir, { recursive: true });
+  } catch {
+    return [];
+  }
+
+  const objects = files
+    .filter((f) => /\.(webp|png|jpg|jpeg|gif|svg|avif)$/i.test(f))
+    .map((f) => {
+      const relativePath = path.relative(UPLOADS_DIR, path.join(dir, f));
+      return {
+        url: `/uploads/${relativePath.replace(/\\/g, '/')}`,
+        name: path.basename(f),
+        section: section || 'uploads',
+      };
+    });
+
+  return objects;
 }
