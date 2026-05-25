@@ -20,6 +20,10 @@ pnpm-debug.log*
 # database
 *.db
 
+# Turso tokens
+create-token*
+create-token-wal
+
 # Cloudflare
 .wrangler/
 
