@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# uploads directory
+uploads/
+
 # database
 *.db
 
@@ -29,6 +32,13 @@ create-token-wal
 
 # macOS-specific files
 .DS_Store
+
+# SSH keys
+two-nature
+two-nature.pub
+
+# opencode
+.opencode/
 
 # jetbrains setting folder
 .idea/
