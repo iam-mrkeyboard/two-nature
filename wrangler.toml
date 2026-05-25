@@ -1,5 +1,8 @@
-pages_build_output_dir = "./dist"
+name = "two-nature"
+compatibility_date = "2026-05-25"
+compatibility_flags = ["nodejs_compat"]
 
 [[r2_buckets]]
 binding = "R2_BUCKET"
 bucket_name = "two-nature-uploads"
+
