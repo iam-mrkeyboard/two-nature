@@ -9,13 +9,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "deploy": "astro build && pm2 restart two-nature",
     "astro": "astro",
     "migrate": "studiocms migrate",
     "studiocms": "studiocms"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
-    "@astrojs/cloudflare": "^13.5.4",
+    "@astrojs/node": "^10.1.1",
     "@libsql/client": "^0.17.3",
     "@node-rs/argon2": "^2.0.2",
     "@studiocms/blog": "^0.3.0",
