@@ -1,11 +1,10 @@
 import type { APIRoute } from 'astro';
 import { listImages } from '../../../lib/storage';
 
-export const GET: APIRoute = async ({ url, locals }) => {
+export const GET: APIRoute = async ({ url }) => {
   try {
     const section = url.searchParams.get('section') || undefined;
-    const env = (locals as any).runtime.env;
-    const images = await listImages(env, section);
+    const images = await listImages(section);
 
     return new Response(JSON.stringify({ success: true, images }), {
       status: 200,
